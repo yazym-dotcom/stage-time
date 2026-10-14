@@ -1,0 +1,50 @@
+name: Check and publish browser demo
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  check-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Check source and public content
+        run: python -B scripts/check_project.py
+      - name: Check deterministic scoring
+        run: python -B -m unittest discover -s tests
+      - name: Check browser JavaScript
+        run: |
+          node --check demo/app.js
+          node --check demo/content.js
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: demo
+  deploy:
+    needs: check-and-package
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish demo
+        id: deployment
+        uses: actions/deploy-pages@v4

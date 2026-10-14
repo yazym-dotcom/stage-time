@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stage Time</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..700,0..100&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* ================= TOKENS ================= */
+:root{
+  --paper:#F4F1EA; --surface:#FFFFFF; --surface-2:#ECE8DF; --surface-3:#E4DFD4;
+  --ink:#17181C; --ink-2:#55575E; --ink-3:#8A8C93; --line:#E2DDD2; --line-2:#EEEAE2;
+  --accent:#1E4D3B; --accent-ink:#FFFFFF; --accent-soft:#E3EDE7; --accent-2:#2E6B53;
+  --brass:#A9772A; --brass-soft:#F3E8D4;
+  --ok:#2F6F4F; --warn:#9A6B12; --bad:#A23D36; --rec:#B8322A; --rec-soft:#F6E3E1;
+  --shadow:0 12px 32px -20px rgba(23,24,28,.35);
+  --r:6px; --r-lg:12px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#131417; --surface:#1B1D21; --surface-2:#22252A; --surface-3:#2A2D33;
+    --ink:#ECE8E0; --ink-2:#A9A6A0; --ink-3:#77757F; --line:#2A2D33; --line-2:#212429;
+    --accent:#5C9B7B; --accent-ink:#0F1A15; --accent-soft:#1B2A22; --accent-2:#77B394;
+    --brass:#D2A455; --brass-soft:#2E2617;
+    --ok:#6DB08E; --warn:#D2A455; --bad:#D07A73; --rec:#D25A50; --rec-soft:#3A2220;
+    --shadow:0 12px 32px -20px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131417; --surface:#1B1D21; --surface-2:#22252A; --surface-3:#2A2D33;
+  --ink:#ECE8E0; --ink-2:#A9A6A0; --ink-3:#77757F; --line:#2A2D33; --line-2:#212429;
+  --accent:#5C9B7B; --accent-ink:#0F1A15; --accent-soft:#1B2A22; --accent-2:#77B394;
+  --brass:#D2A455; --brass-soft:#2E2617;
+  --ok:#6DB08E; --warn:#D2A455; --bad:#D07A73; --rec:#D25A50; --rec-soft:#3A2220;
+  --shadow:0 12px 32px -20px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+
+/* ================= BASE ================= */
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);min-height:100vh;
+  font:400 15px/1.55 'Inter',system-ui,-apple-system,sans-serif;letter-spacing:-0.005em}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,select,textarea{font:inherit;color:inherit}
+a{color:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.display{font-family:'Fraunces',Georgia,serif;font-variation-settings:'opsz' 96,'SOFT' 20;
+  font-weight:500;letter-spacing:-0.02em;line-height:1.1}
+h1.display{font-size:34px}
+h2{font-family:'Fraunces',Georgia,serif;font-variation-settings:'opsz' 48,'SOFT' 20;
+  font-weight:500;font-size:20px;letter-spacing:-0.015em;line-height:1.2}
+h3{font-size:15px;font-family:'Fraunces',Georgia,serif;font-style:italic;font-variation-settings:'opsz' 14,'SOFT' 40;font-weight:500;letter-spacing:0;text-transform:none;color:var(--brass)}
+p{color:var(--ink-2)}
+.muted{color:var(--ink-2)} .faint{color:var(--ink-3)} .small{font-size:13px}
+.shell{max-width:1040px;margin:0 auto;padding:28px 24px 80px}
+
+/* ================= TOP BAR ================= */
+.topbar{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--paper) 92%,transparent);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line-2)}
+.topbar-in{max-width:1040px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;gap:28px}
+.brand{font-family:'Fraunces',Georgia,serif;font-variation-settings:'opsz' 144,'SOFT' 30;font-weight:600;
+  font-size:22px;letter-spacing:-0.02em;white-space:nowrap}
+.brand em{font-style:italic;color:var(--brass)}
+nav{display:flex;gap:4px;margin-left:8px}
+nav button{padding:8px 12px;border-radius:var(--r);font-size:14px;font-weight:500;color:var(--ink-2)}
+nav button:hover{color:var(--ink);background:var(--surface-2)}
+nav button[aria-current="true"]{color:var(--ink);background:var(--surface-3)}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.statusbtn{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);padding:6px 10px;border-radius:var(--r)}
+.statusbtn:hover{background:var(--surface-2)}
+.sdot{width:7px;height:7px;border-radius:99px;background:var(--ok)}
+.sdot.warn{background:var(--warn);animation:pulse 1.2s ease-in-out infinite}
+.sdot.bad{background:var(--bad)}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+.iconbtn{width:34px;height:34px;display:grid;place-items:center;border-radius:var(--r);color:var(--ink-2)}
+.iconbtn:hover{background:var(--surface-2);color:var(--ink)}
+.iconbtn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.notice{max-width:1040px;margin:0 auto;padding:10px 24px;font-size:13px;color:var(--ink-2);
+  border-top:1px solid var(--line-2);display:flex;gap:12px;align-items:center}
+.notice b{color:var(--ink);font-weight:600}
+.notice button{margin-left:auto;color:var(--ink-3)}
+
+/* ================= CONTROLS ================= */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:var(--r);
+  font-size:14px;font-weight:600;border:1px solid transparent;transition:background .15s,border-color .15s,transform .05s;white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--ink);color:var(--paper)}
+.btn-primary:hover{background:var(--accent)}
+:root[data-theme="dark"] .btn-primary,:root:not([data-theme="light"]) .btn-primary{color:var(--paper)}
+.btn-accent{background:var(--accent);color:var(--accent-ink)}
+.btn-accent:hover{background:var(--accent-2)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn-rec{background:var(--rec);color:#fff}
+.btn-lg{padding:14px 26px;font-size:15px}
+.btn-sm{padding:7px 12px;font-size:13px}
+.btn-quiet{font-size:13px;font-weight:500;color:var(--ink-2);padding:6px 4px;border-radius:4px}
+.btn-quiet:hover{color:var(--ink)}
+.btn .count{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:12px;opacity:.8;margin-left:2px}
+.input,.select{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:9px 12px;font-size:14px;width:100%}
+.input:focus{border-color:var(--ink-3);outline:none}
+.select{width:auto;cursor:pointer;padding-right:28px}
+.input-lg{padding:14px 16px;font-size:17px}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:8px;padding:3px;gap:2px}
+.seg button{padding:6px 12px;border-radius:6px;font-size:13px;font-weight:500;color:var(--ink-2)}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.chip{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--surface-2);color:var(--ink-2);font-weight:500;white-space:nowrap}
+.chip.accent{background:var(--accent-soft);color:var(--accent)}
+.chip.brass{background:var(--brass-soft);color:var(--brass)}
+.chip.bad{background:var(--rec-soft);color:var(--bad)}
+.kbd{font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--ink-3)}
+
+/* ================= SURFACES ================= */
+.panel{background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-lg);padding:22px 24px}
+.panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
+.panel-head .meta{font-size:13px;color:var(--ink-3)}
+.list{border-top:1px solid var(--line-2)}
+.rowitem{display:flex;align-items:center;gap:16px;padding:14px 4px;border-bottom:1px solid var(--line-2);width:100%;text-align:left;
+  transition:background .12s;border-radius:0}
+button.rowitem:hover{background:var(--surface-2)}
+.rowitem .t{font-weight:600;font-size:15px}
+.rowitem .d{font-size:13px;color:var(--ink-2);margin-top:2px}
+.rowitem .m{margin-left:auto;font-size:12.5px;color:var(--ink-3);white-space:nowrap;display:flex;align-items:center;gap:10px}
+.rowitem.locked{opacity:.5}
+.rowitem .num{width:28px;height:28px;border-radius:99px;display:grid;place-items:center;flex:none;
+  font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--surface-2);color:var(--ink-2)}
+.chev{width:16px;height:16px;stroke:var(--ink-3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.page-head p{margin-top:6px;max-width:60ch}
+.grid-2{display:grid;grid-template-columns:7fr 5fr;gap:24px;align-items:start}
+@media (max-width:860px){.grid-2{grid-template-columns:1fr}}
+.stack{display:flex;flex-direction:column;gap:18px}
+.divider{height:1px;background:var(--line-2);margin:18px 0}
+
+/* ================= TODAY ================= */
+.today-head{margin-bottom:24px}
+.today-head .sub{font-size:15px;margin-top:6px}
+.plan-steps{list-style:none;display:flex;flex-direction:column}
+.plan-steps li{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line-2)}
+.plan-steps li:first-child{border-top:none}
+.plan-steps .n{width:26px;height:26px;border-radius:99px;border:1.5px solid var(--line);display:grid;place-items:center;
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-2);flex:none;margin-top:2px}
+.plan-steps li.done .n{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.plan-steps li.done .t{text-decoration:line-through;color:var(--ink-3)}
+.plan-steps .t{font-weight:600}
+.plan-steps .d{font-size:13px;color:var(--ink-2);margin-top:2px}
+.plan-steps .mins{margin-left:auto;font-size:12.5px;color:var(--ink-3);white-space:nowrap;padding-top:3px}
+.plan-actions{display:flex;align-items:center;gap:16px;margin-top:18px;padding-top:18px;border-top:1px solid var(--line-2)}
+.numbers{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line-2);border:1px solid var(--line-2);border-radius:var(--r-lg);overflow:hidden}
+.num{background:var(--surface);padding:16px 18px}
+.num .v{font-family:'Fraunces',Georgia,serif;font-variation-settings:'opsz' 96;font-size:30px;font-weight:500;line-height:1;letter-spacing:-0.02em}
+.num .l{font-size:12px;color:var(--ink-3);margin-top:6px;display:flex;justify-content:space-between}
+.num .l i{font-style:normal;color:var(--ink-2)}
+.num .tr{font-family:'JetBrains Mono',monospace;font-size:11px}
+.num .tr.good{color:var(--ok)}
+.numbers.empty{display:block;background:var(--surface);padding:16px 18px;font-size:14px;line-height:1.6;color:var(--ink-2)} .num .tr.bad{color:var(--bad)}
+.fix{padding:4px 2px}
+.fix p{margin-top:8px;font-size:14px;line-height:1.6}
+.fwrecord{padding:4px 2px}
+.bars{display:flex;flex-direction:column;gap:9px;margin-top:10px}
+.bar{display:grid;grid-template-columns:110px 1fr 40px;gap:12px;align-items:center;font-size:13px}
+.bar i{font-style:normal;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .track{height:4px;background:var(--surface-3);border-radius:99px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);border-radius:99px;transition:width .6s ease-out}
+.bar .fill.low{background:var(--bad)}
+.bar u{text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:12px;text-align:right;color:var(--ink-2)}
+
+/* ================= AVATAR ================= */
+.avatar{position:relative;border-radius:99px;overflow:hidden;background:var(--surface-2);flex:none;
+  box-shadow:0 0 0 1px rgba(0,0,0,.06) inset}
+.avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;opacity:0;transition:opacity .13s ease}
+.avatar img.on{opacity:1}
+.avatar .init{position:absolute;inset:0;display:grid;place-items:center;font-family:'Fraunces',Georgia,serif;font-size:40%;color:var(--ink-2)}
+.avatar-56{width:56px;height:56px} .avatar-40{width:40px;height:40px} .avatar-96{width:96px;height:96px}
+.avatar-wrap{position:relative;width:224px;height:224px;margin:0 auto}
+.avatar-wrap .avatar{width:200px;height:200px;position:absolute;left:12px;top:12px}
+.avatar-wrap svg{position:absolute;inset:0;width:224px;height:224px;transform:rotate(-90deg)}
+.avatar-wrap circle{fill:none;stroke-width:3}
+.avatar-wrap .bg{stroke:var(--line)}
+.avatar-wrap .lv{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .08s linear}
+.avatar-wrap.speaking .lv{stroke:var(--brass)}
+.avatar-wrap.listening .lv{stroke:var(--rec)}
+
+/* ================= ROLEPLAY PICKER ================= */
+.personas{display:flex;gap:6px;flex-wrap:wrap}
+.persona{display:flex;flex-direction:column;align-items:center;gap:8px;width:108px;padding:12px 6px;border-radius:var(--r-lg);border:1px solid transparent;text-align:center}
+.persona:hover{background:var(--surface-2)}
+.persona[aria-pressed="true"]{border-color:var(--ink);background:var(--surface-2)}
+.persona .n{font-size:12.5px;font-weight:600;line-height:1.25}
+.persona .l{font-size:11px;color:var(--ink-3)}
+.persona-brief{margin-top:14px;padding:14px 16px;background:var(--surface-2);border-radius:var(--r-lg);font-size:14px;color:var(--ink-2);display:flex;gap:14px;align-items:center}
+.persona-brief b{color:var(--ink)}
+
+/* ================= LIBRARY ================= */
+.group-head{font-size:15px;font-family:'Fraunces',Georgia,serif;font-style:italic;font-variation-settings:'opsz' 14,'SOFT' 40;font-weight:500;letter-spacing:0;text-transform:none;color:var(--brass);padding:24px 4px 8px}
+.acc .rowitem{cursor:pointer}
+.acc-body{padding:6px 4px 22px 48px;border-bottom:1px solid var(--line-2)}
+.steps{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;margin:8px 0 14px}
+@media (max-width:640px){.steps{grid-template-columns:1fr}}
+.steps li{display:flex;gap:12px;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.steps li b{color:var(--ink);display:block;font-weight:600}
+.steps li .k{width:22px;height:22px;border-radius:99px;background:var(--surface-2);display:grid;place-items:center;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-2);flex:none;margin-top:1px}
+.quote{border-left:2px solid var(--brass);padding:10px 16px;margin:14px 0;background:var(--surface);border-radius:0 var(--r) var(--r) 0}
+.quote .q{font-weight:600;font-size:14px;margin-bottom:6px;color:var(--ink)}
+.quote p{font-size:14px}
+.source{font-size:12px;color:var(--ink-3);margin-top:10px}
+.lesson-body p{font-size:14.5px;line-height:1.7;max-width:64ch}
+.tip{margin-top:12px;padding:12px 14px;background:var(--brass-soft);border-radius:var(--r);font-size:13.5px;color:var(--brass);max-width:64ch}
+
+/* ================= WORDS ================= */
+.lookup{display:flex;gap:10px;margin-bottom:16px}
+.term{padding:12px 4px;border-bottom:1px solid var(--line-2)}
+.term-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;width:100%;text-align:left}
+.term-head b{font-size:14.5px;font-weight:600}
+.term-head em{font-style:normal;font-size:11.5px;color:var(--ink-3);white-space:nowrap}
+.term .d{display:block;font-size:13px;color:var(--ink-2);margin-top:2px}
+.term-more{margin-top:10px;padding:12px 14px;background:var(--surface-2);border-radius:var(--r)}
+.term-more p{font-size:13.5px}
+.plain{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.plain li{font-size:13.5px;color:var(--ink-2);padding-left:14px;position:relative}
+.plain li::before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;border-radius:99px;background:var(--brass)}
+
+/* ================= PATH ================= */
+.hero-lesson .plan-line{margin-top:14px;font-size:14px;color:var(--ink-2)}
+.programme{position:relative;padding-top:38px}
+.programme::before{content:"";position:absolute;left:24px;right:24px;top:16px;height:5px;border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:8px 28px;align-items:start}
+.hero-grid h2.display{font-size:34px;font-variation-settings:'opsz' 144,'SOFT' 20;letter-spacing:-0.025em;line-height:1.05}
+.hero-no{font-family:'Fraunces',Georgia,serif;font-style:italic;font-variation-settings:'opsz' 144,'SOFT' 40;font-weight:500;font-size:44px;line-height:1;color:var(--brass);text-align:right;white-space:nowrap;padding-top:2px}
+.hero-no small{display:block;font-size:13px;font-style:italic;color:var(--ink-3);margin-top:6px;font-variation-settings:'opsz' 14}
+.path-unit{margin-top:20px}
+.path-unit:first-child{margin-top:0}
+.path-unit-head{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--ink-2)}
+.path-unit-head b{color:var(--ink);font-weight:600}
+.lesson-row{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;padding:11px 8px 11px 6px;border-top:1px solid var(--line-2);border-radius:6px}
+.lesson-row:hover{background:var(--surface-2)}
+.lesson-row .ln{width:30px;flex:none;display:block;text-align:right;padding-right:2px;font-family:'Fraunces',Georgia,serif;font-variation-settings:'opsz' 48,'SOFT' 20;font-size:17px;line-height:1.25;color:var(--ink-3)}
+.lesson-row.done .ln{color:var(--accent)}
+.lesson-row.current{box-shadow:inset 3px 0 0 var(--brass);background:color-mix(in srgb,var(--brass-soft) 45%,transparent)}
+.lesson-row.current .ln{color:var(--brass)}
+.lesson-row.current .tl b{color:var(--ink)}
+.upro{flex:1;height:2px;background:var(--line);margin:0 14px;align-self:center;border-radius:2px;min-width:40px}
+.upro i{display:block;height:100%;background:var(--accent);border-radius:2px}
+.lesson-row.locked{opacity:.5}
+.lesson-row .lt{flex:1;min-width:0}
+.lesson-row .tl{display:flex;align-items:baseline;gap:10px}
+.lesson-row .tl b{font-weight:600;font-size:14.5px;flex:none}
+.lesson-row .ld{flex:1;min-width:20px;border-bottom:1px dotted var(--line);transform:translateY(-5px)}
+.lesson-row .lt small{display:block;font-size:12.5px;color:var(--ink-2)}
+.lesson-row .lm{font-size:12.5px;color:var(--ink-3);white-space:nowrap;font-family:'JetBrains Mono',monospace;flex:none}
+.onboard .ob-q{margin-top:18px}
+.onboard .ob-q h3{margin-bottom:8px}
+.onboard .seg{flex-wrap:wrap}
+.teach{margin-top:18px;max-width:60ch}
+.teach p{font-family:'Fraunces',Georgia,serif;font-variation-settings:'opsz' 18,'SOFT' 20;font-size:18.5px;line-height:1.6;color:var(--ink);margin-top:12px}
+.teach-fw{margin-top:20px;padding:16px 18px;background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--line-2);max-width:72ch}
+.teach-fw h3{color:var(--ink);font-style:normal;font-variation-settings:'opsz' 48,'SOFT' 20;font-size:17px;margin-bottom:8px}
+.demo{display:grid;grid-template-columns:340px 1fr;gap:26px;align-items:start;margin-top:14px}
+@media (max-width:760px){.demo{grid-template-columns:1fr}}
+.demo-tile{--c-tile:#1a1d21;--c-green:#3ba55d;--c-muted:#9a9ca3;--c-text:#ecebe6;width:100%;max-width:340px;background:var(--c-tile)}
+.demo-tile .captions{right:14px;font-size:14px;bottom:46px}
+
+/* ================= RUNNER ================= */
+#runner{max-width:820px;margin:0 auto;padding:16px 24px 140px}
+.runner-top{display:flex;align-items:center;gap:18px;margin-bottom:34px}
+.stepper{display:flex;align-items:center;gap:10px;flex:1;justify-content:center;font-size:12.5px;color:var(--ink-3);overflow:hidden}
+.stepper .s{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.stepper .s i{width:6px;height:6px;border-radius:99px;background:var(--line);flex:none;font-style:normal}
+.stepper .s.done i{background:var(--accent)}
+.stepper .s.now{color:var(--ink);font-weight:600}
+.stepper .s.now i{background:var(--ink);width:8px;height:8px}
+.stepper .sep{width:18px;height:1px;background:var(--line)}
+.runner-timer{font-size:14px;color:var(--ink-2);min-width:64px;text-align:right}
+.stage{min-height:320px}
+.stage-kicker{font-size:15px;font-family:'Fraunces',Georgia,serif;font-style:italic;font-variation-settings:'opsz' 14,'SOFT' 40;font-weight:500;letter-spacing:0;text-transform:none;color:var(--brass);margin-bottom:8px}
+.stage h1{font-size:36px;margin-bottom:10px;font-variation-settings:'opsz' 144,'SOFT' 20}
+.stage .lead{font-size:16px;max-width:56ch;line-height:1.6}
+.qtext{font-family:'Fraunces',Georgia,serif;font-variation-settings:'opsz' 72,'SOFT' 24;font-size:30px;line-height:1.3;
+  letter-spacing:-0.015em;max-width:24ch;margin:6px 0 14px}
+@media (max-width:640px){.qtext{font-size:24px}.stage h1{font-size:26px}}
+.scaffold{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.scaffold .step{display:flex;align-items:baseline;gap:8px;padding:8px 12px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line-2);font-size:13px}
+.scaffold .step b{font-weight:600}
+.scaffold .step span{color:var(--ink-3);font-size:12px}
+.hint{margin-top:14px;padding:12px 16px;border-left:2px solid var(--brass);background:var(--surface);border-radius:0 var(--r) var(--r) 0;font-size:14px;color:var(--ink-2);max-width:60ch}
+.hint b{color:var(--ink)}
+.countdown{font-family:'Fraunces',Georgia,serif;font-size:72px;line-height:1;color:var(--brass);margin:24px 0 8px}
+.ready-meta{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.options{margin-top:16px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:14px 16px;background:var(--surface);border-radius:var(--r-lg)}
+.options label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)}
+.passage{font-family:'Fraunces',Georgia,serif;font-variation-settings:'opsz' 48,'SOFT' 30;font-size:22px;line-height:1.55;max-width:38em;color:var(--ink);margin-top:14px}
+.ring{width:120px;height:120px;margin:22px 0 6px;position:relative}
+.ring svg{transform:rotate(-90deg);width:120px;height:120px}
+.ring circle{fill:none;stroke-width:4}
+.ring .bg{stroke:var(--line)}
+.ring .fg{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:500}
+.rp-stage{display:grid;grid-template-columns:240px 1fr;gap:28px;align-items:start}
+@media (max-width:700px){.rp-stage{grid-template-columns:1fr}.avatar-wrap{margin:0 auto}}
+.rp-name{text-align:center;margin-top:12px}
+.rp-name b{display:block;font-weight:600}
+.rp-name span{font-size:12.5px;color:var(--ink-3)}
+.rp-log{display:flex;flex-direction:column;gap:14px}
+.bubble{padding:14px 16px;border-radius:var(--r-lg);font-size:15px;line-height:1.5;max-width:56ch}
+.bubble.them{background:var(--surface);border:1px solid var(--line-2)}
+.bubble.you{background:var(--accent-soft);color:var(--ink);align-self:flex-end}
+.bubble .who{font-size:13px;font-family:'Fraunces',Georgia,serif;font-style:italic;font-variation-settings:'opsz' 14,'SOFT' 40;font-weight:500;letter-spacing:0;text-transform:none;color:var(--brass);margin-bottom:4px}
+.rp-hint{font-size:13px;color:var(--ink-2);padding:10px 14px;background:var(--surface-2);border-radius:var(--r)}
+.rp-hint b{color:var(--ink)}
+
+/* result */
+.result{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:start;padding:20px 22px;background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-lg)}
+@media (max-width:560px){.result{grid-template-columns:1fr}}
+.result .score{font-family:'Fraunces',Georgia,serif;font-variation-settings:'opsz' 144;font-size:64px;line-height:.9;font-weight:500;letter-spacing:-0.03em;min-width:96px}
+.result .score small{display:block;font-size:14px;font-family:'Fraunces',Georgia,serif;font-style:italic;font-variation-settings:'opsz' 14,'SOFT' 40;font-weight:500;letter-spacing:0;text-transform:none;color:var(--brass);margin-top:6px}
+.result .verdict{font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:500;letter-spacing:-0.01em}
+.result .one{margin-top:8px;font-size:15px;line-height:1.55;color:var(--ink)}
+.result .one b{font-weight:600}
+.result .sub{margin-top:8px;font-size:13px;color:var(--ink-2)}
+details.more{margin-top:14px}
+details.more summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--ink-2);list-style:none;display:inline-flex;align-items:center;gap:6px}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::after{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);margin-top:-3px}
+details.more[open] summary::after{transform:rotate(-135deg);margin-top:3px}
+details.more .body{margin-top:12px}
+.notes{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.notes li{font-size:13.5px;color:var(--ink-2);padding-left:14px;position:relative;line-height:1.5}
+.notes li::before{content:"";position:absolute;left:0;top:8px;width:4px;height:4px;border-radius:99px;background:var(--ink-3)}
+.notes li.warn::before{background:var(--bad)}
+.transcript{font-size:14px;line-height:1.65;color:var(--ink-2);background:var(--surface-2);padding:12px 14px;border-radius:var(--r);margin-top:10px;max-height:160px;overflow-y:auto}
+.summary-rows{margin-top:18px}
+.kv{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+
+/* action bar */
+.actionbar{position:fixed;left:0;right:0;bottom:0;z-index:25;background:color-mix(in srgb,var(--paper) 94%,transparent);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line-2)}
+.meterline{height:3px;background:var(--surface-3)}
+.meterfill{height:100%;width:0%;background:var(--accent);transition:width .08s linear}
+.meterfill.rec{background:var(--rec)}
+.actionbar-in{max-width:820px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:14px}
+.phase{font-size:14px;font-family:'Fraunces',Georgia,serif;font-style:italic;font-variation-settings:'opsz' 14,'SOFT' 40;font-weight:500;letter-spacing:0;text-transform:none;color:var(--brass);display:flex;align-items:center;gap:8px}
+.phase i{width:8px;height:8px;border-radius:99px;background:var(--line);font-style:normal}
+.phase.speak i{background:var(--rec);animation:pulse 1.1s ease-in-out infinite}
+.phase.listen i{background:var(--brass)} .phase.think i{background:var(--warn)} .phase.score i{background:var(--accent)} .phase.done i{background:var(--ok)}
+.actions{margin-left:auto;display:flex;gap:10px;align-items:center}
+
+/* ================= VIDEO CALL (roleplay) ================= */
+#runner.wide{max-width:1120px}
+.call{--c-bg:#0f1114;--c-tile:#1a1d21;--c-line:#2a2e34;--c-text:#ecebe6;--c-muted:#9a9ca3;--c-green:#3ba55d;--c-red:#d64545;
+  position:relative;background:var(--c-bg);color:var(--c-text);border-radius:14px;overflow:hidden;
+  min-height:calc(100vh - 150px);display:flex;flex-direction:column;border:1px solid var(--c-line)}
+.call-top{display:flex;align-items:center;gap:16px;padding:12px 18px;border-bottom:1px solid var(--c-line);font-size:13px;color:var(--c-muted)}
+.call-top b{color:var(--c-text);font-weight:600}
+.call-top .mono{margin-left:auto;font-size:13px;color:var(--c-text)}
+.call-status{padding:3px 10px;border-radius:99px;background:var(--c-tile);font-size:12px}
+.call-body{display:grid;grid-template-columns:1fr 340px;flex:1;min-height:0}
+.call-stage{position:relative;padding:18px;display:flex;align-items:center;justify-content:center}
+.tile{position:relative;aspect-ratio:4/3;background:var(--c-tile);border-radius:12px;overflow:hidden;border:2px solid transparent;transition:border-color .2s}
+.tile.main{width:100%;max-width:860px}
+.tile.pip{position:absolute;right:30px;bottom:30px;width:23%;min-width:150px;box-shadow:0 12px 32px rgba(0,0,0,.55);z-index:2;background:#15171b}
+.tile.speaking{border-color:var(--c-green)}
+.tile .tile-bg{position:absolute;inset:-8%;width:116%;height:116%;object-fit:cover;filter:blur(24px) brightness(.5);z-index:0}
+.tile .avatar{position:absolute;inset:0;width:100%;height:100%;border-radius:0;box-shadow:none;background:transparent;z-index:1}
+.tile .avatar img{object-fit:contain;object-position:50% 50%}
+.tile .avatar video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 50%;opacity:0;transition:opacity .35s ease}
+.tile .avatar video.on{opacity:1}
+.tile .avatar.stills{animation:breathe 5.6s ease-in-out infinite;transform-origin:50% 80%}
+@keyframes breathe{0%,100%{transform:scale(1) translate(0,0)}50%{transform:scale(1.014) translate(0,-1.5px)}}
+.tile .grain{position:absolute;inset:-20%;width:140%;height:140%;pointer-events:none;z-index:2;opacity:.055;mix-blend-mode:overlay;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation:grain .5s steps(3) infinite}
+@keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-3%,2%)}66%{transform:translate(2%,-3%)}100%{transform:translate(0,0)}}
+@media (prefers-reduced-motion:reduce){.tile .avatar.stills,.tile .grain{animation:none}}
+.tile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);background:#000;z-index:1}
+.tile .initials{position:absolute;inset:0;display:grid;place-items:center;font-family:'Fraunces',Georgia,serif;font-size:52px;color:var(--c-muted)}
+.tile .name{position:absolute;left:10px;bottom:10px;background:rgba(0,0,0,.6);color:#fff;font-size:12.5px;padding:4px 10px;border-radius:6px;display:flex;align-items:center;gap:7px;z-index:2}
+.tile .lvl{z-index:2}
+.tile .name .dot{width:7px;height:7px;border-radius:99px;background:var(--c-muted)}
+.tile.speaking .name .dot{background:var(--c-green)}
+.tile .name .faint{color:#bbb}
+.tile .lvl{position:absolute;right:12px;top:12px;width:64px;height:4px;background:rgba(255,255,255,.18);border-radius:99px;overflow:hidden}
+.tile .lvl i{display:block;height:100%;width:0;background:var(--c-green);transition:width .08s linear}
+.captions{position:absolute;left:14px;right:30%;bottom:50px;background:rgba(0,0,0,.72);color:#fff;z-index:3;
+  padding:10px 16px;border-radius:8px;font-size:16px;line-height:1.4;text-align:left;pointer-events:none;width:fit-content;max-width:70%}
+.call-panel{border-left:1px solid var(--c-line);display:flex;flex-direction:column;min-height:0;background:#121417}
+.call-panel .ph{padding:12px 16px;border-bottom:1px solid var(--c-line);font-size:14px;font-family:'Fraunces',Georgia,serif;font-style:italic;font-variation-settings:'opsz' 14,'SOFT' 40;font-weight:500;letter-spacing:0;text-transform:none;color:var(--brass);color:#D2A455}
+.call-panel .pbody{overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;flex:1;max-height:calc(100vh - 300px)}
+.cmsg{font-size:13.5px;line-height:1.5;color:var(--c-text)}
+.cmsg .who{font-size:12.5px;font-family:'Fraunces',Georgia,serif;font-style:italic;font-variation-settings:'opsz' 14,'SOFT' 40;font-weight:500;letter-spacing:0;text-transform:none;color:var(--brass);color:#D2A455;margin-bottom:3px}
+.cmsg.you{padding-left:12px;border-left:2px solid var(--c-green)}
+.cmsg.hint{color:var(--c-muted);font-size:12.5px;padding:8px 10px;background:var(--c-tile);border-radius:8px}
+.cmsg.score{background:var(--c-tile);border-radius:8px;padding:10px 12px}
+.cmsg.score .sline{display:flex;align-items:baseline;gap:8px;font-size:15px}
+.cmsg.score .sline b{font-family:'Fraunces',Georgia,serif;font-size:26px;font-weight:500;color:#fff;line-height:1}
+.cmsg.score .faint{color:var(--c-muted)}
+.call .bar i,.call .bar u,.call .notes li,.call details.more summary{color:var(--c-muted)}
+.call .bar .track{background:#2a2e34} .call .bar .fill{background:var(--c-green)}
+.call .transcript{background:#0f1114;color:var(--c-text)}
+.call .bars{margin-top:8px}
+.call-bar{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 14px;border-top:1px solid var(--c-line);flex-wrap:wrap;background:#121417}
+.cbtn{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:66px;padding:8px 10px;border-radius:10px;color:var(--c-text);font-size:11px;letter-spacing:.01em}
+.cbtn:hover{background:var(--c-tile)}
+.cbtn:disabled{opacity:.45;cursor:default}
+.cbtn:disabled:hover{background:none}
+.cbtn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cbtn.off{color:var(--c-muted)}
+.cbtn.live{color:var(--c-green)}
+.cbtn.done,.cbtn.leave{flex-direction:row;padding:10px 18px;font-size:13.5px;font-weight:600;border-radius:8px;min-width:0;margin-left:6px}
+.cbtn.done{background:#fff;color:#111}
+.cbtn.done:hover{background:#e8e8e8}
+.cbtn.leave{background:var(--c-red);color:#fff;gap:8px}
+.cbtn.leave:hover{background:#b93a3a}
+.leave-confirm{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);background:#1a1d21;border:1px solid #2a2e34;border-radius:10px;
+  padding:12px 16px;display:flex;gap:10px;align-items:center;font-size:13.5px;color:#ecebe6;z-index:5;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+@media (max-width:900px){
+  .call-body{grid-template-columns:1fr}
+  .call-panel{border-left:none;border-top:1px solid var(--c-line)}
+  .call-panel .pbody{max-height:240px}
+}
+@media (max-width:560px){
+  .call-stage{padding:12px}
+  .tile.pip{width:34%;min-width:110px;right:18px;bottom:18px}
+  .cbtn{min-width:52px;padding:8px 6px}
+  .cbtn span{font-size:10px}
+  .captions{left:10px;right:10px;max-width:none;font-size:14px;bottom:auto;top:10px}
+}
+
+/* ================= QUIZ ================= */
+.sort-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-2)}
+.sort-row b{font-size:14.5px;font-weight:600}
+.sort-row .why{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.sort-row .btns{display:flex;gap:6px;flex:none}
+.pill{font-size:12.5px;padding:6px 12px;border-radius:99px;border:1px solid var(--line);color:var(--ink-2)}
+.pill:hover{border-color:var(--ink-3);color:var(--ink)}
+.pill.right{border-color:var(--ok);color:var(--ok)} .pill.wrong{border-color:var(--bad);color:var(--bad)}
+
+/* ================= POPOVER / TOAST ================= */
+.popover{position:fixed;top:64px;right:max(16px,calc((100vw - 1040px)/2 + 24px));z-index:40;width:320px;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 20px;box-shadow:var(--shadow)}
+.popover h3{margin-bottom:12px}
+.pref{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;font-size:14px;border-top:1px solid var(--line-2)}
+.pref:first-of-type{border-top:none}
+.pref .select{padding:6px 26px 6px 10px;font-size:13px}
+.svc{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-2);padding:5px 0}
+.svc b{font-weight:500;color:var(--ink)}
+.svc .on{color:var(--ok)} .svc .off{color:var(--bad)} .svc .load{color:var(--warn)}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--ink);color:var(--paper);
+  border-radius:var(--r);padding:10px 16px;font-size:13.5px;z-index:60;transition:opacity .2s,transform .2s;max-width:88vw;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{padding:28px 8px;color:var(--ink-3);font-size:14px}
+@media (max-width:640px){
+  .topbar-in{gap:12px;padding:0 14px}
+  nav{margin-left:0;overflow-x:auto;scrollbar-width:none} nav::-webkit-scrollbar{display:none}
+  nav button{padding:8px 9px}
+  .statusbtn span:last-child{display:none}
+  .shell{padding:20px 16px 120px}
+  #runner{padding:12px 16px 150px}
+  h1.display{font-size:28px}
+  .panel{padding:18px 16px}
+  .plan-actions{flex-wrap:wrap}
+  .plan-steps .mins{display:none}
+  .rowitem .m span:not(:last-child){display:none}
+  .popover{left:12px;right:12px;width:auto}
+  .lookup{flex-wrap:wrap}
+  .actionbar-in{padding:12px 16px}
+  .avatar-wrap{width:180px;height:180px} .avatar-wrap .avatar{width:160px;height:160px;left:10px;top:10px} .avatar-wrap svg{width:180px;height:180px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <span class="brand">Stage <em>Time</em></span>
+    <nav id="nav">
+      <button data-page="today" aria-current="true">Today</button>
+      <button data-page="train">Practice</button>
+      <button data-page="library">Library</button>
+      <button data-page="words">Words</button>
+    </nav>
+    <div class="topbar-right">
+      <button class="statusbtn" id="statusBtn"><span class="sdot" id="sdot"></span><span id="stext">Checking</span></button>
+      <button class="iconbtn" id="prefsBtn" aria-label="Preferences">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="notice" id="notice" hidden></div>
+</header>
+
+<main class="shell" id="pages">
+
+  <!-- TODAY -->
+  <section id="page-today">
+    <div id="onboard" hidden></div>
+    <div id="home" hidden>
+      <div class="today-head">
+        <h1 class="display" id="greet">Good morning.</h1>
+        <p class="sub" id="greetSub"></p>
+      </div>
+      <div class="grid-2">
+        <div class="stack">
+          <div class="panel hero-lesson programme" id="nextPanel"></div>
+          <div class="panel">
+            <div class="panel-head"><h2>Your path</h2><span class="meta" id="pathMeta"></span></div>
+            <div id="path"></div>
+          </div>
+        </div>
+        <aside class="stack">
+          <div class="numbers" id="numbers"></div>
+          <div class="fix">
+            <h3>What to fix next</h3>
+            <p id="fixNext"></p>
+            <button class="btn-quiet" id="lessonBtn" style="margin-top:6px">Write me a lesson from my numbers</button>
+            <div id="lessonOut"></div>
+          </div>
+          <div class="fwrecord" id="fwRecord" hidden>
+            <h3>Your structures</h3>
+            <div id="fwRecordBody"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Recent</h2><button class="btn-quiet" id="seeTrain">Practice on your own</button></div>
+            <div id="recent" class="list"></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRAIN -->
+  <section id="page-train" hidden>
+    <div class="page-head">
+      <div><h1 class="display">Practice on your own</h1><p>Everything from the path, any time, in any order. The path on Today is the guided route; this is the gym.</p></div>
+      <div class="seg" id="trainSeg"></div>
+    </div>
+    <div class="panel" id="roleplayPicker" style="margin-bottom:22px">
+      <div class="panel-head"><h2>Face someone</h2><span class="meta">Four turns. The recorder starts when they finish speaking.</span></div>
+      <div class="personas" id="personas"></div>
+      <div class="persona-brief" id="personaBrief" hidden></div>
+      <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:16px">
+        <div class="seg" id="scenarioSeg"></div>
+        <button class="btn btn-primary" id="rpStart" disabled>Start</button>
+      </div>
+    </div>
+    <div class="list" id="drillList"></div>
+    <div style="margin-top:16px;display:flex;gap:16px;align-items:center">
+      <button class="btn-quiet" id="genDrillBtn">Write me a new drill</button>
+      <span class="small faint" id="drillCount"></span>
+    </div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section id="page-library" hidden>
+    <div class="page-head">
+      <div><h1 class="display">Library</h1><p>Thirty-five ways to shape an answer, and nineteen lessons on delivery. Every framework can be practised in three questions.</p></div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="seg" id="libSeg"></div>
+        <input class="input" id="libSearch" placeholder="Search" style="width:180px">
+      </div>
+    </div>
+    <div id="libList"></div>
+  </section>
+
+  <!-- WORDS -->
+  <section id="page-words" hidden>
+    <div class="page-head">
+      <div><h1 class="display">Words</h1><p>Corporate shorthand, decoded. Type what you heard, or drill the bank by ear.</p></div>
+    </div>
+    <div class="grid-2">
+      <div class="stack">
+        <div class="lookup">
+          <input class="input input-lg" id="lookup" placeholder="What did they say? tee that up">
+          <button class="btn btn-primary" id="lookupBtn">Explain</button>
+        </div>
+        <div id="lookupOut"></div>
+        <div class="panel">
+          <div class="panel-head"><h2>The bank</h2>
+            <select class="select" id="bankFilter">
+              <option value="">All kinds</option>
+              <option value="phrasal_verb">Phrasal verbs</option>
+              <option value="sports_metaphor">Sports metaphors</option>
+              <option value="military_metaphor">Military metaphors</option>
+              <option value="idiom">Idioms</option>
+              <option value="corporate_jargon">Corporate jargon</option>
+              <option value="acronym">Acronyms</option>
+              <option value="ambiguous">Reverses or hides meaning</option>
+            </select></div>
+          <input class="input" id="bankSearch" placeholder="Filter terms" style="margin-bottom:6px">
+          <div id="bank"></div>
+        </div>
+      </div>
+      <aside class="stack">
+        <div class="panel">
+          <h3>Review</h3>
+          <p id="dueText" style="margin-top:8px;font-size:14px"></p>
+          <button class="btn btn-primary" id="drillBtn" style="margin-top:12px">Drill by ear</button>
+          <div id="earHost" style="margin-top:14px"></div>
+        </div>
+        <div class="panel">
+          <h3>Ask cleanly</h3>
+          <p class="small" style="margin-top:8px">The strongest version offers a guess. Never open with sorry.</p>
+          <ul class="plain">
+            <li>When you say throughput, do you mean cases closed per day?</li>
+            <li>I want to make sure I have this right. That means we pause the feed?</li>
+            <li>What do you mean by that specifically?</li>
+            <li>Can we define that for everyone before we go on?</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- RUNNER -->
+  <section id="runner" hidden>
+    <div class="runner-top">
+      <button class="btn-quiet" id="runExit">Exit</button>
+      <div class="stepper" id="stepper"></div>
+      <div class="runner-timer mono" id="runTimer"></div>
+    </div>
+    <div class="stage" id="stage"></div>
+  </section>
+</main>
+
+<div class="actionbar" id="actionbar" hidden>
+  <div class="meterline"><div class="meterfill" id="meterFill"></div></div>
+  <div class="actionbar-in">
+    <span class="phase" id="runPhase"><i></i><span>Ready</span></span>
+    <div class="actions" id="runActions"></div>
+  </div>
+</div>
+
+<div class="popover" id="prefs" hidden>
+  <h3>Preferences</h3>
+  <div class="pref"><span>Theme</span><select class="select" id="pTheme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
+  <div class="pref"><span>Voices</span><select class="select" id="pVoices"><option value="on">On</option><option value="off">Off</option></select></div>
+  <div class="pref"><span>Voice</span><select class="select" id="pVoice"><option value="auto">Auto</option></select></div>
+  <div class="pref"><span>Hear it</span><button class="btn btn-ghost btn-sm" id="pVoiceTest">Test the voice</button></div>
+  <p class="small faint" style="margin-top:4px;max-width:36ch">Hearing nothing? Windows may be sending sound to a monitor or dock. Click the speaker icon in the taskbar, open the output device list beside the volume slider, and choose your speakers or headphones.</p>
+  <div class="pref"><span>Think time</span><select class="select" id="pThink"><option value="0">None</option><option value="3">3 s</option><option value="5">5 s</option><option value="8">8 s</option></select></div>
+  <div class="pref"><span>Auto-advance</span><select class="select" id="pAuto"><option value="on">On</option><option value="off">Off</option></select></div>
+  <div class="pref"><span>Audience</span><select class="select" id="pAudience"><option value="us_internal">US internal</option><option value="international">International</option><option value="client">Client</option><option value="exec">Executive</option></select></div>
+  <div class="divider"></div>
+  <h3>Services</h3>
+  <div id="svcList" style="margin-top:8px"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const API = location.protocol === "file:" ? "http://127.0.0.1:8000" : "";
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const HOSTILE = new Set(["loaded","compound","status","gotcha","statement","off_topic","false_dilemma"]);
+const S = { health:null, content:null, history:null, plan:null, course:null, profile:null, bank:null, page:"today",
+            persona:null, scenario:null, usedQ:new Set(), prefs:null };
+
+/* ---------------- prefs, theme ---------------- */
+const store = { get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+                set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} } };
+const DEFAULT_PREFS = { theme:"system", voices:"on", voice:"auto", think:"5", auto:"on", audience:"us_internal" };
+function loadPrefs(){ try{ S.prefs = { ...DEFAULT_PREFS, ...JSON.parse(store.get("st.prefs") || "{}") }; }catch(e){ S.prefs = { ...DEFAULT_PREFS }; } }
+function savePrefs(){ store.set("st.prefs", JSON.stringify(S.prefs)); }
+const QUERY = new URLSearchParams(location.search);
+function applyTheme(){
+  const root = document.documentElement, m = QUERY.get("theme") || S.prefs.theme;
+  if(m === "system") root.removeAttribute("data-theme"); else root.setAttribute("data-theme", m);
+}
+loadPrefs(); applyTheme();
+const speakOn = () => S.prefs.voices !== "off";
+
+/* ---------------- plumbing ---------------- */
+function toast(msg, ms = 3200){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), ms); }
+async function api(path, opts){ const r = await fetch(API + path, opts); if(!r.ok) throw new Error((await r.text()).slice(0, 160) || r.statusText); return r.json(); }
+const postJson = (p, b) => api(p, { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(b) });
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+const mmss = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,"0")}`;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const fwById = id => (S.content.frameworks || []).find(f => f.id === id) || null;
+const label = k => String(k || "").replace(/_/g, " ").replace(/^\w/, c => c.toUpperCase());
+const KIND = { opinion:"Opinion", explain:"Explain it", update:"Status update", decision:"Decision", behavioral:"Tell me about a time",
+  hypothetical:"What would you do", analysis:"Why is it happening", recommend:"Recommendation", numbers:"A specific figure",
+  two_part:"Two questions", clean:"Tough but fair", loaded:"Loaded premise", compound:"Compound", status:"Status attack",
+  gotcha:"Unanswerable figure", statement:"Statement, no question", off_topic:"Off topic", false_dilemma:"False dilemma", jargon:"Corporate shorthand" };
+const kindLabel = k => KIND[k] || label(k);
+const CHEV = `<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>`;
+
+/* ---------------- pages ---------------- */
+const PAGES = ["today","train","library","words"];
+$("#nav").addEventListener("click", e => { const b = e.target.closest("[data-page]"); if(b) showPage(b.dataset.page); });
+function showPage(p){
+  if(Runner.active) Runner.exit();
+  S.page = p;
+  $$("#nav button").forEach(b => b.setAttribute("aria-current", b.dataset.page === p));
+  PAGES.forEach(id => $("#page-" + id).hidden = id !== p);
+  $("#runner").hidden = true; $("#actionbar").hidden = true;
+  if(p === "words" && !S.bank) loadBank();
+  window.scrollTo({ top:0 });
+}
+
+/* ================= SPEECH ================= */
+const TTS = {
+  voice:null, voices:[], current:null, utter:null, unlocked:false, forcedLocal:false, warned:false,
+  init(){
+    if(!("speechSynthesis" in window)) return;
+    const pick = () => { this.voices = speechSynthesis.getVoices(); this.voice = this.choose(); };
+    pick(); speechSynthesis.onvoiceschanged = pick;
+    // Browsers only play speech after a user gesture. Prime the engine on the first one.
+    const unlock = () => { if(this.unlocked) return; this.unlocked = true;
+      try{ const u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u); }catch(e){} };
+    ["pointerdown", "keydown"].forEach(ev => document.addEventListener(ev, unlock, { once:true, capture:true }));
+  },
+  english(){ return this.voices.filter(v => /^en/i.test(v.lang)); },
+  choose(){
+    const vs = this.english(); if(!vs.length) return null;
+    const want = S.prefs.voice;
+    if(want && want !== "auto" && !this.forcedLocal){ const v = vs.find(x => x.name === want); if(v) return v; }
+    const local = vs.find(v => v.localService && /^en[-_](US|GB)/i.test(v.lang)) || vs.find(v => v.localService);
+    if(this.forcedLocal && local) return local;
+    // Best sounding first: natural or neural voices, then a local one, then anything English.
+    return vs.find(v => /natural|neural|premium/i.test(v.name) && /^en[-_](US|GB)/i.test(v.lang)) || local
+      || vs.find(v => /^en[-_](US|GB)/i.test(v.lang)) || vs[0];
+  },
+  async ready(){
+    if(!("speechSynthesis" in window)) return false;
+    for(let i = 0; i < 20 && !this.voices.length; i++){ this.voices = speechSynthesis.getVoices(); if(this.voices.length) break; await sleep(100); }
+    if(!this.voice) this.voice = this.choose();
+    return this.voices.length > 0;
+  },
+  available(){ return !!(S.health && S.health.tts) || ("speechSynthesis" in window); },
+  // The natural voices (Kokoro on the server) are used unless a browser voice was chosen by name.
+  natural(){ return !!(S.health && S.health.tts) && (!S.prefs.voice || S.prefs.voice === "auto"); },
+  voiceForActor(actor){ return actor === "man" ? "am_michael" : "af_heart"; },   // Tom, Dana; the narrator uses Dana's
+  voiceFor(avatar, voice){ if(voice) return voice; return this.voiceForActor(avatar && avatar.actor); },
+  // Sentence groups of roughly 60 to 220 characters: the first one plays while the next is being made.
+  chunks(text){
+    const parts = String(text).replace(/\s+/g, " ").trim().match(/[^.!?]+[.!?]+["')\]]*|[^.!?]+$/g) || [String(text)];
+    const out = []; let cur = "";
+    for(const p of parts){ const t = p.trim(); if(!t) continue;
+      if(cur && ((!out.length && cur.length >= 20) || cur.length + t.length > 220 || cur.length >= 60)){ out.push(cur); cur = t; } else cur = cur ? cur + " " + t : t; }
+    if(cur) out.push(cur); return out;
+  },
+  async fetchSpeech(text, voice, speed){
+    try{ const r = await fetch(API + "/speak", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify({ text, voice, speed }) });
+      if(!r.ok) return null; return URL.createObjectURL(await r.blob()); }catch(e){ return null; }
+  },
+  playUrl(url){
+    return new Promise(res => {
+      const a = new Audio(url); let done = false;
+      const finish = () => { if(done) return; done = true; if(this.current === a){ this.current = null; this.currentDone = null; } URL.revokeObjectURL(url); res(); };
+      this.current = a; this.currentDone = finish;
+      a.onended = finish; a.onerror = finish; a.play().catch(finish);
+    });
+  },
+  async say(text, { rate = 1.0, onWord = null, avatar = null, voice = null } = {}){
+    if(!speakOn() || !text) return;
+    const gen = this.gen = (this.gen || 0) + 1;
+    if(avatar) avatar.speakStart();
+    try{
+      if(this.natural()){
+        const parts = this.chunks(text), v = this.voiceFor(avatar, voice);
+        let next = this.fetchSpeech(parts[0], v, rate), failedAt = -1;
+        for(let i = 0; i < parts.length; i++){
+          const url = await next; if(gen !== this.gen){ if(url) URL.revokeObjectURL(url); return; }
+          if(!url){ failedAt = i; break; }
+          if(i + 1 < parts.length) next = this.fetchSpeech(parts[i + 1], v, rate);
+          await this.playUrl(url); if(gen !== this.gen) return;
+        }
+        if(failedAt < 0) return;
+        text = parts.slice(failedAt).join(" ");   // the browser finishes whatever the server could not make
+      }
+      if(!("speechSynthesis" in window)){ await sleep(Math.min(6000, 600 + text.length * 55)); return; }
+      await this.ready();
+      await this.speakBrowser(text, rate, onWord);
+    } finally { if(avatar) avatar.speakStop(); }
+  },
+  speakBrowser(text, rate, onWord){
+    return new Promise(res => {
+      let done = false, started = false, retried = false;
+      const finish = () => { if(done) return; done = true; clearInterval(keep); clearTimeout(guard); clearTimeout(hard); res(); };
+      const speakNow = () => {
+        try{
+          const u = new SpeechSynthesisUtterance(text);
+          u.rate = rate; u.pitch = 1; u.volume = 1;
+          if(this.voice){ u.voice = this.voice; u.lang = this.voice.lang; } else u.lang = "en-US";
+          u.onstart = () => { started = true; };
+          u.onend = finish;
+          u.onerror = e => { if(e.error === "interrupted" || e.error === "canceled") return finish(); fallback(); };
+          if(onWord) u.onboundary = onWord;
+          this.utter = u;                 // keep a reference: callbacks die with a collected utterance
+          speechSynthesis.speak(u);
+          speechSynthesis.resume();
+        }catch(e){ finish(); }
+      };
+      // If the chosen voice never starts (online voices can fail quietly), switch to a
+      // local voice once and try again; after that, give up on sound for this line.
+      const fallback = () => {
+        if(retried || started){ finish(); return; }
+        retried = true;
+        try{ speechSynthesis.cancel(); }catch(e){}
+        const local = this.english().find(v => v.localService);
+        if(local && this.voice !== local){ this.forcedLocal = true; this.voice = local; setTimeout(speakNow, 200); }
+        else { if(!this.warned){ this.warned = true; toast("The browser did not play the voice. Pick another voice under Preferences and press Test."); } finish(); }
+      };
+      // cancel() straight before speak() silently drops the new line in Chrome. Give it a beat.
+      if(speechSynthesis.speaking || speechSynthesis.pending){ speechSynthesis.cancel(); setTimeout(speakNow, 180); } else speakNow();
+      const guard = setTimeout(() => { if(!started) fallback(); }, 3000);
+      const keep = setInterval(() => { try{ if(speechSynthesis.paused) speechSynthesis.resume(); }catch(e){} }, 4000);
+      const hard = setTimeout(finish, 4000 + text.length * 95 / rate);
+    });
+  },
+  stop(){ this.gen = (this.gen || 0) + 1;
+    try{ if("speechSynthesis" in window) speechSynthesis.cancel(); }catch(e){}
+    try{ const a = this.current, d = this.currentDone; this.current = null; this.currentDone = null; if(a) a.pause(); if(d) d(); }catch(e){} }
+};
+
+/* ================= RECORDER ================= */
+class Recorder{
+  constructor(onLevel){ this.onLevel = onLevel; this.chunks = []; this.levels = []; }
+  async start(){
+    this.stream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:false, noiseSuppression:false, autoGainControl:false } });
+    this.chunks = []; this.levels = []; this.onsetAt = null; this.loud = 0; this.t0 = performance.now();
+    this.rec = new MediaRecorder(this.stream);
+    this.rec.ondataavailable = e => e.data.size && this.chunks.push(e.data);
+    this.rec.start(250);
+    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const src = this.ctx.createMediaStreamSource(this.stream);
+    this.an = this.ctx.createAnalyser(); this.an.fftSize = 1024; this.an.smoothingTimeConstant = 0.5; src.connect(this.an);
+    this.buf = new Float32Array(this.an.fftSize);
+    this.tick();
+  }
+  level(){ this.an.getFloatTimeDomainData(this.buf); let sum = 0; for(let i = 0; i < this.buf.length; i++) sum += this.buf[i] ** 2;
+    return Math.max(-70, 20 * Math.log10(Math.sqrt(sum / this.buf.length) || 1e-7)); }
+  tick(){
+    if(!this.rec || this.rec.state === "inactive") return;
+    const db = this.level(); this.levels.push(db);
+    if(this.onsetAt == null){ this.loud = db > -45 ? this.loud + 1 : 0; if(this.loud >= 3) this.onsetAt = performance.now(); }
+    if(this.onLevel) this.onLevel(Math.min(1, Math.max(0, (db + 60) / 60)), db);
+    requestAnimationFrame(() => this.tick());
+  }
+  async stop(){
+    return new Promise(res => {
+      const finish = () => { this.stream.getTracks().forEach(t => t.stop()); if(this.ctx) this.ctx.close().catch(() => {});
+        if(this.onLevel) this.onLevel(0, -70);
+        res({ blob:new Blob(this.chunks, { type:"audio/webm" }), seconds:(performance.now() - this.t0) / 1000 }); };
+      if(!this.rec || this.rec.state === "inactive") return finish();
+      this.rec.onstop = finish; this.rec.stop();
+    });
+  }
+}
+function beep(){ try{ const ac = new (window.AudioContext || window.webkitAudioContext)(); const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = 660; g.gain.value = 0.12; o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime + 0.35); setTimeout(() => { try{ ac.close(); }catch(e){} }, 900); }catch(e){} }
+const MIC_HELP = "The microphone is blocked for this site. Click the icon at the left of the address bar, set Microphone (and Camera, if you want the self-view) to Allow, then reload the page.";
+function micBlocked(err){
+  const n = $("#notice");
+  if(err && (err.name === "NotAllowedError" || err.name === "SecurityError")){
+    n.hidden = false; n.innerHTML = `<b>Microphone blocked.</b> ${esc(MIC_HELP)}<button id="noticeX" aria-label="Dismiss">Dismiss</button>`;
+    $("#noticeX").onclick = () => { n.hidden = true; };
+    toast("Microphone blocked for this site. See the note under the header.", 5000);
+  } else if(err && err.name === "NotFoundError"){
+    toast("No microphone was found. Plug one in or check the sound settings, then try again.", 5000);
+  } else toast("Microphone access is needed. Allow it in the address bar, then try again.");
+}
+async function warmMic(){ if(QUERY.has("nomic")) return true;
+  try{ const s = await navigator.mediaDevices.getUserMedia({ audio:true }); s.getTracks().forEach(t => t.stop()); return true; }
+  catch(e){ micBlocked(e); return false; } }
+async function checkMicPermission(){
+  try{ const st = await navigator.permissions.query({ name:"microphone" });
+    if(st.state === "denied") micBlocked({ name:"NotAllowedError" });
+    st.onchange = () => { if(st.state === "granted" && !$("#notice").hidden && /Microphone blocked/.test($("#notice").textContent)) $("#notice").hidden = true; };
+  }catch(e){}
+}
+
+/* ================= AVATAR ================= */
+class Avatar{
+  constructor(actor, sizeClass = ""){
+    this.actor = actor; const m = (S.content.avatars || {}).actors || {}; this.spec = m[actor] || null;
+    this.el = document.createElement("div"); this.el.className = "avatar " + sizeClass;
+    // Real motion where it matters: the call and demo tiles play generated video loops of the
+    // character (an idle loop and a talking loop) when the clips exist. Small circles keep stills.
+    this.video = !!(this.spec && this.spec.video && /tile-av/.test(sizeClass));
+    if(this.video){
+      this.vIdle = this.mkVideo(this.spec.video.idle); this.vTalk = this.mkVideo(this.spec.video.talk);
+      this.el.append(this.vIdle, this.vTalk); this.el.classList.add("live");
+    } else if(this.spec){ this.a = document.createElement("img"); this.b = document.createElement("img"); this.el.append(this.a, this.b); this.front = this.a; this.el.classList.add("stills"); }
+    else { this.el.innerHTML = `<div class="init">${esc((actor || "?")[0].toUpperCase())}</div>`; }
+    this.timers = []; this.speaking = false;
+    this.preload(); this.idle();
+  }
+  mkVideo(file){
+    const v = document.createElement("video"); v.muted = true; v.loop = true; v.playsInline = true; v.preload = "auto"; v.disablePictureInPicture = true;
+    v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.src = `${API}/avatars/${this.actor}/${file}`; return v;
+  }
+  swapVideo(v){
+    const other = v === this.vIdle ? this.vTalk : this.vIdle;
+    try{ if(v.readyState >= 1 && isFinite(v.duration) && v.duration > 1) v.currentTime = Math.random() * (v.duration - 0.8); }catch(e){}
+    v.play().catch(() => {}); v.classList.add("on"); other.classList.remove("on");
+    clearTimeout(this._pause); this._pause = setTimeout(() => { if(!other.classList.contains("on")) other.pause(); }, 600);
+  }
+  url(state, i){ const fr = (this.spec && this.spec.states[state]) || []; if(!fr.length) return null; return `${API}/avatars/${this.actor}/${fr[(i ?? 0) % fr.length]}`; }
+  preload(){ if(!this.spec || this.video) return; Object.keys(this.spec.states).forEach(st => this.spec.states[st].forEach(f => { const im = new Image(); im.src = `${API}/avatars/${this.actor}/${f}`; })); }
+  show(u){ if(!u || !this.spec) return; const back = this.front === this.a ? this.b : this.a;
+    back.src = u; back.classList.add("on"); this.front.classList.remove("on"); this.front = back; }
+  idle(){ this.stopBlink(); if(this.video){ this.swapVideo(this.vIdle); return; } this.show(this.url("idle", 0)); this.blinkLoop(); }
+  blinkLoop(){ const t = setTimeout(async () => { if(this.speaking) { this.blinkLoop(); return; }
+    const fr = (this.spec && this.spec.states.blink) || []; if(fr.length >= 3){ for(let i = 1; i < fr.length; i++){ this.show(this.url("blink", i)); await sleep(55); } this.show(this.url("idle", 0)); }
+    this.blinkLoop(); }, 2800 + Math.random() * 3500); this.timers.push(t); }
+  stopBlink(){ this.timers.forEach(clearTimeout); this.timers = []; }
+  speakStart(){ if(!this.spec) return; this.speaking = true; this.stopBlink(); this.el.closest(".avatar-wrap,.tile")?.classList.add("speaking");
+    if(this.video){ this.swapVideo(this.vTalk); return; }
+    // The talk frames come in strips of four consecutive mouth shapes. Stay inside one
+    // strip for the whole line and sweep back and forth through it, so the head never
+    // jumps between takes, at roughly four mouth changes a second with short closes.
+    const frames = this.spec.states.talk, groups = Math.max(1, Math.floor(frames.length / 4));
+    const base = 4 * Math.floor(Math.random() * groups), size = Math.min(4, frames.length - base);
+    const order = []; for(let i = 0; i < size; i++) order.push(base + i); for(let i = size - 2; i > 0; i--) order.push(base + i);
+    let k = 0, n = 0;
+    const loop = () => { if(!this.speaking) return; n += 1;
+      if(n % 9 === 0){ this.show(this.url("talk", base + size - 1)); this._t = setTimeout(loop, 260 + Math.random() * 240); return; }
+      k = (k + 1) % order.length; this.show(this.url("talk", order[k]));
+      this._t = setTimeout(loop, 190 + Math.random() * 110); };
+    this.show(this.url("talk", order[0])); this._t = setTimeout(loop, 220); }
+  mouth(){ /* word boundaries do not drive the mouth; the paced loop above does */ }
+  speakStop(){ this.speaking = false; clearTimeout(this._t); this.el.closest(".avatar-wrap,.tile")?.classList.remove("speaking"); this.idle(); }
+  async react(kind, ms = 1800){ if(!this.spec || this.video) return; const u = this.url(kind, 0); if(!u) return; this.stopBlink(); this.show(u); await sleep(ms); if(!this.speaking) this.idle(); }
+  destroy(){ this.speaking = false; clearTimeout(this._t); clearTimeout(this._pause); this.stopBlink(); if(this.video){ try{ this.vIdle.pause(); this.vTalk.pause(); this.vIdle.removeAttribute("src"); this.vTalk.removeAttribute("src"); }catch(e){} } }
+}
+function actorFor(persona){ const m = S.content.avatars; return m && m.personas ? m.personas[persona] : null; }
+
+/* ================= BOOT ================= */
+async function boot(){
+  TTS.init();
+  try{ S.health = await api("/health"); }
+  catch(e){ $("#pages").innerHTML = `<div class="panel" style="margin-top:40px"><h2>The app is not running</h2><p style="margin-top:8px">Start it with start.bat, or from the folder: <span class="mono">uvicorn main:app --port 8000</span>, then reload.</p></div>`; return; }
+  try{ S.content = await api("/content"); await refresh(); }
+  catch(e){ toast("Could not load the app content: " + e.message); return; }
+  renderStatus(); renderTrain(); renderLibrary(); bindPrefs();
+  checkMicPermission();
+  route();
+  setTimeout(pollHealth, 8000);
+}
+// Deep links: #train, #library, #words, #drill=<id>, #framework=<id>, #roleplay=<persona>[,<scenario>]
+function route(){
+  const h = decodeURIComponent(location.hash.slice(1)); if(!h) return;
+  const [k, v] = h.split("=");
+  if(PAGES.includes(k)) return showPage(k);
+  if(k === "drill" && v) return Runner.open([stepForDrill(exercise(v))]);
+  if(k === "framework" && v && fwById(v)) return Runner.open([{ kind:"framework", title:"Practise " + fwById(v).name, params:{ framework:v } }]);
+  if(k === "roleplay" && v){ const [persona, scenario] = v.split(","); if(S.content.personas[persona])
+    return Runner.open([{ kind:"roleplay", title:"Roleplay: " + S.content.personas[persona].name, params:{ persona, scenario:scenario || "stakeholder" } }]); }
+  if(k === "demo") return demoResult();
+  if(k === "lesson" && v && lessonById(v)) return Runner.open([{ kind:"lesson", title:lessonById(v).title, params:{ lesson:v } }]);
+}
+// A static preview of a graded answer, for checking the design without a microphone.
+function demoResult(){
+  Runner.active = true; PAGES.forEach(id => $("#page-" + id).hidden = true); $("#runner").hidden = false; $("#actionbar").hidden = false;
+  Runner.steps = [{ title:"Practise PREP" }]; Runner.i = 0; Runner.stepper(); Stage.timer("0:41 / 0:45"); Stage.phase("done", "Scored");
+  const f = fwById("prep");
+  const sc = { total:76, parts:{ concision:12, composure:20, language:14, directness:20, structure:10 }, max:{ concision:15, composure:20, language:20, directness:25, structure:20 },
+    notes:["The grader did not hear these PREP steps: Point.", "Hedge density 3.4 per 100 words, mostly i think, maybe.", "Heard: the reason is, for example."], caps_applied:[], possible:100 };
+  const llm = { one_focus_fix:"Say the answer again in the last sentence, then stop.", better_opening:"Yes, with a human sign-off." };
+  Stage.set(`<div class="stage-kicker">Question 2 of 3, opinion, PREP</div><div class="qtext">Should analysts be allowed to use AI tools to draft client emails?</div>
+    ${QDrill.scaffold(f, "answer")}<div style="margin-top:18px">${resultHtml({ total:76, one:oneThing(sc, llm), sub:"Beat before your first word: 1.4s", better:llm.better_opening, sc, llm,
+    transcript:"I think yes, maybe with a sign-off. The reason is that drafting is where the hours go and review is where the risk sits. For example, last quarter the pilot team cut turnaround from two days to four hours with no findings." })}</div>`);
+  autoNext({ label:"Next question", seconds:8, onGo:() => {} });
+}
+window.addEventListener("hashchange", route);
+async function pollHealth(){ try{ S.health = await api("/health"); renderStatus(); }catch(e){}
+  const l = (S.health && S.health.loading) || {}; setTimeout(pollHealth, (l.asr || l.tts) ? 6000 : 30000); }
+
+function renderStatus(){
+  const h = S.health, l = h.loading || {}, browserVoice = ("speechSynthesis" in window);
+  const dot = $("#sdot"), txt = $("#stext");
+  if(l.asr){ dot.className = "sdot warn"; txt.textContent = "Loading transcription"; }
+  else if(!h.asr || !h.acoustics){ dot.className = "sdot bad"; txt.textContent = !h.asr ? "Transcription off" : "Voice analysis off"; }
+  else if(!h.llm){ dot.className = "sdot warn"; txt.textContent = "Coaching model off"; }
+  else { dot.className = "sdot"; txt.textContent = "All set"; }
+  const n = $("#notice");
+  if(!h.llm){ n.hidden = false; n.innerHTML = `<b>The coaching model is off.</b> Answers are graded on the measurable parts only and roleplay questions come from the bank. Open Ollama and it switches on by itself.<button id="noticeX" aria-label="Dismiss">Dismiss</button>`;
+    $("#noticeX").onclick = () => { n.hidden = true; }; }
+  else n.hidden = true;
+  const rows = [["Transcription", h.asr, l.asr, h.errors && h.errors.asr], ["Coaching model", h.llm, false, null],
+                ["Voice analysis", h.acoustics, false, h.errors && h.errors.acoustics], ["Voices", h.tts || browserVoice, l.tts, null]];
+  $("#svcList").innerHTML = rows.map(([n2, on, ld, err]) => `<div class="svc"><b>${n2}</b><span class="${ld ? "load" : on ? "on" : "off"}" title="${esc(err || "")}">${ld ? "loading" : on ? (n2 === "Voices" && !h.tts ? "browser" : "on") : "off"}</span></div>`).join("");
+  $("#lessonBtn").disabled = !h.llm; $("#genDrillBtn").disabled = !h.llm;
+}
+
+/* ---------------- prefs UI ---------------- */
+function bindPrefs(){
+  const pop = $("#prefs");
+  const sync = () => { $("#pTheme").value = S.prefs.theme; $("#pVoices").value = S.prefs.voices; $("#pThink").value = S.prefs.think; $("#pAuto").value = S.prefs.auto; $("#pAudience").value = S.prefs.audience; };
+  sync();
+  const toggle = () => { pop.hidden = !pop.hidden; };
+  $("#prefsBtn").onclick = toggle; $("#statusBtn").onclick = toggle;
+  document.addEventListener("click", e => { if(!pop.hidden && !pop.contains(e.target) && !e.target.closest("#prefsBtn,#statusBtn")) pop.hidden = true; });
+  [["pTheme","theme"],["pVoices","voices"],["pThink","think"],["pAuto","auto"],["pAudience","audience"]].forEach(([id, key]) => {
+    $("#" + id).onchange = e => { S.prefs[key] = e.target.value; savePrefs(); if(key === "theme") applyTheme(); };
+  });
+  const fillVoices = () => {
+    const sel = $("#pVoice"), cur = S.prefs.voice || "auto";
+    const vs = TTS.english();
+    const natural = !!(S.health && S.health.tts);
+    sel.innerHTML = `<option value="auto">Auto${natural ? " (natural voices)" : TTS.voice ? " (" + esc(TTS.voice.name.replace(/Microsoft |Google /, "")) + ")" : ""}</option>`
+      + vs.map(v => `<option value="${esc(v.name)}" ${v.name === cur ? "selected" : ""}>${esc(v.name.replace(/Microsoft |Google /, ""))}${v.localService ? "" : " (online)"}</option>`).join("");
+    sel.value = vs.some(v => v.name === cur) ? cur : "auto";
+  };
+  fillVoices(); if("speechSynthesis" in window) speechSynthesis.addEventListener("voiceschanged", fillVoices);
+  $("#pVoice").onchange = e => { S.prefs.voice = e.target.value; savePrefs(); TTS.forcedLocal = false; TTS.voice = TTS.choose(); fillVoices(); };
+  $("#pVoiceTest").onclick = () => { S.prefs.voices = "on"; $("#pVoices").value = "on"; savePrefs(); beep(); TTS.say("This is how the characters will sound. Give me your answer when you are ready."); };
+}
+
+/* ================= TODAY ================= */
+function greeting(){ const h = new Date().getHours(); return h < 12 ? "Good morning." : h < 18 ? "Good afternoon." : "Good evening."; }
+async function refresh(){
+  const [h, plan, courseState, profile] = await Promise.all([api("/history"), api("/plan"), api("/course"), api("/profile")]);
+  S.history = h; S.plan = plan; S.course = courseState; S.profile = profile;
+  $("#greet").textContent = greeting();
+  const unit = courseState.units.find(u => u.lessons.some(l => l.id === courseState.current)) || courseState.units[courseState.units.length - 1];
+  const bits = [`Unit ${unit.n}, ${unit.name}`, `${courseState.done} of ${courseState.total} lessons done`];
+  if(h.week_sessions) bits.push(`${h.week_sessions} session${h.week_sessions === 1 ? "" : "s"} this week`);
+  if(h.streak_days > 1) bits.push(`${h.streak_days}-day streak`);
+  $("#greetSub").textContent = bits.join(". ") + ".";
+  $("#onboard").hidden = !!profile.onboarded; $("#home").hidden = !profile.onboarded;
+  if(!profile.onboarded) renderOnboarding(); else { renderHero(); renderPath(); }
+  const a = h.averages, t = h.trend || {};
+  const tr = (v, goodUp) => v == null ? "" : `<span class="tr ${(v > 0) === goodUp ? "good" : "bad"}">${v > 0 ? "+" : ""}${v}</span>`;
+  const measured = [a.score, a.wpm, a.filler_pct, a.hedge_per_100w].some(v => v != null);
+  $("#numbers").className = measured ? "numbers" : "numbers empty";
+  // a word beside each number, so the panel says whether it is good before you look anything up
+  const word = (v, bands) => v == null ? "" : (bands.find(([max]) => v <= max) || bands[bands.length - 1])[1];
+  const scoreW = word(a.score, [[49, "early days"], [64, "getting there"], [79, "solid"], [100, "strong"]]);
+  const wpmW = word(a.wpm, [[119, "slow"], [129, "a little slow"], [150, "on target"], [165, "a touch fast"], [999, "fast"]]);
+  const fillW = word(a.filler_pct, [[2, "clean"], [4, "under the bar"], [999, "over the four percent bar"]]);
+  const hedgeW = word(a.hedge_per_100w, [[1, "light"], [3, "some"], [999, "heavy"]]);
+  $("#numbers").innerHTML = measured ? [
+    ["Score", a.score ?? "–", scoreW, tr(t.score, true)], ["Words a minute", a.wpm ?? "–", wpmW, ""],
+    ["Fillers", a.filler_pct != null ? a.filler_pct + "%" : "–", fillW, tr(t.filler_pct, false)], ["Hedges per 100", a.hedge_per_100w ?? "–", hedgeW, ""],
+  ].map(([l, v, w, trend]) => `<div class="num"><div class="v">${v}</div><div class="l"><span>${l}${w ? `, <i>${w}</i>` : ""}</span>${trend}</div></div>`).join("")
+  : "Your numbers appear here after the first scored lesson: score, words a minute, fillers and hedges, each against your own earlier attempts.";
+  $("#fixNext").textContent = h.fix_next || "";
+  const fs = Object.entries(h.framework_stats || {}).sort((x, y) => y[1].n - x[1].n);
+  $("#fwRecord").hidden = !fs.length;
+  $("#fwRecordBody").innerHTML = `<div class="bars">${fs.map(([id, st]) => `<div class="bar"><i>${esc((fwById(id) || {name:id}).name)}</i><div class="track"><div class="fill ${st.mean < 55 ? "low" : ""}" style="width:${st.mean}%"></div></div><u>${st.mean}</u></div>`).join("")}</div>`;
+  $("#recent").innerHTML = h.recent.length ? h.recent.slice().reverse().slice(0, 5).map(r => `
+    <div class="rowitem"><div><div class="t">${esc(r.title || r.drill)}</div><div class="d">${esc((r.at || "").replace("T", " ").slice(0, 16))}${r.framework ? ", " + esc((fwById(r.framework) || {name:r.framework}).name) : ""}</div></div>
+      <div class="m"><span class="mono" style="font-size:16px;color:var(--ink)">${r.score ?? "–"}</span></div></div>`).join("")
+    : `<div class="empty">Nothing yet. The first lesson is the place to start.</div>`;
+}
+const lessonById = id => (S.content.course.lessons || []).find(l => l.id === id) || null;
+function renderHero(){
+  const c = S.course, p = S.plan, cur = c.current ? lessonById(c.current) : null;
+  const remaining = p.steps.filter(x => !x.done);
+  const mins = remaining.reduce((a, x) => a + x.minutes, 0);
+  $("#nextPanel").innerHTML = cur ? `
+    <div class="stage-kicker">Next on your path</div>
+    <div class="hero-grid"><h2 class="display">${esc(cur.title)}</h2><div class="hero-no">№ ${c.number[cur.id]}<small>of ${c.total}</small></div></div>
+    <p class="lead" style="margin-top:8px">${esc(cur.goal)}</p>
+    <div class="plan-line">${remaining.length ? `Today: ${remaining.map(x => esc(x.title.replace(/^Lesson \d+: /, ""))).join(", then ")}. ${mins} minutes.` : "Today's lessons are done. Come back tomorrow, or keep going."}</div>
+    <div class="plan-actions"><button class="btn btn-primary btn-lg" id="planBegin">${remaining.length ? ((c.done || p.done_count) ? "Continue" : "Start") : "Keep going"}</button>
+      ${remaining.length > 1 ? `<button class="btn-quiet" id="lessonOnly">Just this lesson</button>` : ""}</div>`
+  : `<div class="stage-kicker">Path complete</div><h2 class="display" style="font-size:34px">You have finished all ${c.total} lessons.</h2>
+    <p class="lead" style="margin-top:6px">From here the daily plan brings back the lessons that did not earn their star, and any lesson can be repeated from the path.</p>
+    <div class="plan-actions"><button class="btn btn-primary btn-lg" id="planBegin">Start today's review</button></div>`;
+  $("#planBegin").onclick = startPlan;
+  if($("#lessonOnly")) $("#lessonOnly").onclick = () => startLesson(cur.id, false);
+}
+async function startPlan(){
+  let steps = S.plan.steps.filter(x => !x.done); if(!steps.length) steps = S.plan.steps;
+  if(!(await warmMic())) return;
+  Runner.open(steps.map(x => ({ ...x })), { plan:true });
+}
+async function startLesson(id, review){
+  const l = lessonById(id); if(!l) return;
+  if(!(await warmMic())) return;
+  Runner.open([{ kind:"lesson", title:l.title, detail:l.goal, params:{ lesson:id, review:!!review } }]);
+}
+function renderPath(){
+  const c = S.course;
+  $("#pathMeta").textContent = `${c.done} of ${c.total} done`;
+  $("#path").innerHTML = c.units.map(u => `
+    <div class="path-unit">
+      <div class="path-unit-head"><b>Unit ${u.n}, ${esc(u.name)}</b><span class="upro"><i style="width:${u.total ? Math.round(100 * u.done / u.total) : 0}%"></i></span><span>${u.done} of ${u.total}</span></div>
+      <p class="small muted" style="margin:2px 0 6px">${esc(u.goal)}</p>
+      ${u.lessons.map(l => `<button class="lesson-row ${l.status}" data-lesson="${esc(l.id)}">
+        <span class="ln">${l.status === "done" ? (l.star ? "★" : "✓") : c.number[l.id]}</span>
+        <span class="lt"><span class="tl"><b>${esc(l.title)}</b><i class="ld"></i><span class="lm">${l.status === "done" && l.best != null ? l.best : l.minutes + " min"}</span></span><small>${esc(l.goal)}</small></span></button>`).join("")}
+    </div>`).join("");
+}
+$("#path").addEventListener("click", e => {
+  const b = e.target.closest("[data-lesson]"); if(!b) return;
+  const l = S.course.units.flatMap(u => u.lessons).find(x => x.id === b.dataset.lesson);
+  if(l.status === "locked") return toast("The path unlocks in order. Finish the lesson before it first.");
+  startLesson(l.id, l.status === "done");
+});
+function renderOnboarding(){
+  const prof = S.profile; let minutes = prof.minutes || 10, goal = prof.goal || "meetings";
+  $("#onboard").innerHTML = `<div class="panel onboard programme">
+    <div class="stage-kicker">Welcome</div>
+    <h1 class="display">Twenty-nine lessons. One at a time.</h1>
+    <p class="lead" style="margin-top:8px">Stage Time is a path, not a menu. Each lesson teaches one thing, shows you a model answer, then has you try it out loud and scores the attempt. The next lesson unlocks when you finish the one before it. Most days take about ten minutes.</p>
+    <div class="ob-q"><h3>How many minutes a day?</h3><div class="seg" id="obMin">${[5, 10, 15].map(m => `<button data-m="${m}" aria-pressed="${m === minutes}">${m} min</button>`).join("")}</div></div>
+    <div class="ob-q"><h3>What do you mostly need this for?</h3><div class="seg" id="obGoal">${[["meetings","Meetings and updates"],["pushback","Pushback and hostile questions"],["interviews","Interviews"],["presentations","Presentations"]].map(([k, l]) => `<button data-g="${k}" aria-pressed="${k === goal}">${l}</button>`).join("")}</div></div>
+    <div class="ob-q"><h3>Microphone</h3><p class="small">The app listens to you and scores what it hears. <button class="btn btn-ghost btn-sm" id="obMic">Check the microphone</button> <span id="obMicState" class="small faint"></span></p></div>
+    <div class="ob-q"><h3>Sound</h3><p class="small">The characters speak through your speakers. <button class="btn btn-ghost btn-sm" id="obSound">Play a test sound</button> <span id="obSoundState" class="small faint"></span></p>
+      <p class="small faint" style="margin-top:6px;max-width:70ch">Hearing nothing? Windows may be sending sound to a monitor or dock. Click the speaker icon in the taskbar, open the output device list beside the volume slider, and choose your speakers or headphones.</p></div>
+    <div class="plan-actions"><button class="btn btn-primary btn-lg" id="obStart">Start Lesson 1</button><span class="small faint">About four minutes.</span></div></div>`;
+  $("#obMin").onclick = e => { const b = e.target.closest("[data-m]"); if(!b) return; minutes = +b.dataset.m; $$("#obMin button").forEach(x => x.setAttribute("aria-pressed", x === b)); };
+  $("#obGoal").onclick = e => { const b = e.target.closest("[data-g]"); if(!b) return; goal = b.dataset.g; $$("#obGoal button").forEach(x => x.setAttribute("aria-pressed", x === b)); };
+  $("#obMic").onclick = async () => { const ok = await warmMic(); $("#obMicState").textContent = ok ? "Working." : "Blocked. See the note under the header."; };
+  $("#obSound").onclick = () => { beep(); TTS.say("If you can hear this, sound is working."); $("#obSoundState").textContent = "Playing a tone, then a sentence."; };
+  $("#obStart").onclick = async () => {
+    try{ S.profile = await postJson("/profile", { onboarded:true, minutes, goal }); }catch(e){}
+    await refresh(); startPlan();
+  };
+}
+$("#seeTrain").onclick = () => showPage("train");
+$("#lessonBtn").onclick = async () => {
+  const h = S.history; $("#lessonBtn").disabled = true; $("#lessonOut").innerHTML = `<p class="small" style="margin-top:8px">Writing…</p>`;
+  try{ const r = await postJson("/lesson", { stats:{ level:h.level, sessions:h.sessions, averages:h.averages, recent:h.recent.slice(-5), framework_stats:h.framework_stats } });
+    $("#lessonOut").innerHTML = r.available ? `<div class="divider"></div><b>${esc(r.title)}</b><p style="margin-top:6px;font-size:14px;line-height:1.65;white-space:pre-line">${esc(r.lesson_md)}</p><div class="tip">Try now: ${esc(r.drill_suggestion)}</div>` : `<p class="small">${esc(r.reason)}</p>`;
+  }catch(e){ $("#lessonOut").innerHTML = `<p class="small">${esc(e.message)}</p>`; }
+  $("#lessonBtn").disabled = false;
+};
+
+/* ================= TRAIN ================= */
+let trainFilter = "all";
+const FLOW_LABEL = { record:"Speak", questions:"Questions", quiz:"Typed" };
+function renderTrain(){
+  const segs = [["all","All"],["questions","Questions"],["record","Speaking"],["roleplay","Roleplay"],["quiz","Decode"]];
+  $("#trainSeg").innerHTML = segs.map(([k, l]) => `<button data-f="${k}" aria-pressed="${k === trainFilter}">${l}</button>`).join("");
+  $("#roleplayPicker").hidden = !(trainFilter === "all" || trainFilter === "roleplay");
+  renderPersonas();
+  const max = S.history.level;
+  const list = S.content.exercises.filter(e => e.kind !== "calibrate" && (trainFilter === "all" || trainFilter === "roleplay" ? trainFilter !== "roleplay" : e.flow === trainFilter));
+  $("#drillList").innerHTML = trainFilter === "roleplay" ? "" : list.map(e => {
+    const locked = e.lvl > max;
+    return `<button class="rowitem ${locked ? "locked" : ""}" data-drill="${esc(e.id)}"><span class="num">L${e.lvl}</span>
+      <div><div class="t">${esc(e.title)}${e.source === "generated" ? ' <span class="chip brass">new</span>' : ""}</div><div class="d">${esc(e.desc)}</div></div>
+      <div class="m"><span>${FLOW_LABEL[e.flow] || "Speak"}</span><span>${e.time}s</span>${locked ? `<span>unlocks at level ${e.lvl}</span>` : CHEV}</div></button>`; }).join("");
+  $("#drillCount").textContent = trainFilter === "roleplay" ? "" : `${list.filter(e => e.lvl <= max).length} of ${list.length} unlocked`;
+}
+$("#trainSeg").addEventListener("click", e => { const b = e.target.closest("[data-f]"); if(!b) return; trainFilter = b.dataset.f; renderTrain(); });
+$("#drillList").addEventListener("click", async e => {
+  const b = e.target.closest("[data-drill]"); if(!b) return;
+  const d = S.content.exercises.find(x => x.id === b.dataset.drill);
+  if(d.lvl > S.history.level){ const lv = S.content.levels.find(l => l.lvl === d.lvl); return toast(`Level ${d.lvl} unlocks after ${lv.unlock_sessions} sessions. You have ${S.history.sessions}.`); }
+  if(d.flow !== "quiz" && !(await warmMic())) return;
+  Runner.open([stepForDrill(d)]);
+});
+function stepForDrill(d){
+  const kind = d.flow === "questions" ? "questions" : d.flow === "quiz" ? "quiz" : "record";
+  return { kind, title:d.title, params:{ drill_id:d.id }, drill:d };
+}
+$("#genDrillBtn").onclick = async () => {
+  $("#genDrillBtn").disabled = true; $("#genDrillBtn").textContent = "Writing…";
+  try{ const d = await postJson("/generate-exercise", { level:S.history.level, kind:"impromptu" });
+    if(!d.available) toast(d.reason); else { S.content.exercises.push(d); renderTrain(); toast(`New drill: ${d.title}.`); } }
+  catch(e){ toast("Could not write a drill: " + e.message); }
+  $("#genDrillBtn").disabled = false; $("#genDrillBtn").textContent = "Write me a new drill";
+};
+function renderPersonas(){
+  const ps = Object.entries(S.content.personas);
+  $("#personas").innerHTML = ps.map(([k, p]) => `<button class="persona" data-p="${esc(k)}" aria-pressed="${S.persona === k}"><span class="avatar avatar-56" data-actor="${esc(actorFor(k) || "")}"></span><span class="n">${esc(p.name)}</span><span class="l">L${p.level}${p.hostile ? ", hostile" : ""}</span></button>`).join("");
+  $$("#personas .avatar").forEach(el => { const actor = el.dataset.actor; if(actor){ const av = new Avatar(actor, "avatar-56"); el.replaceWith(av.el); av.stopBlink(); } });
+  const scenarios = Object.entries(S.content.scenarios);
+  if(!S.scenario) S.scenario = scenarios[0][0];
+  $("#scenarioSeg").innerHTML = scenarios.map(([k, v]) => `<button data-s="${esc(k)}" aria-pressed="${S.scenario === k}" title="${esc(v)}">${esc(label(k))}</button>`).join("");
+  const brief = $("#personaBrief");
+  if(S.persona){ const p = S.content.personas[S.persona]; brief.hidden = false; brief.innerHTML = `<div><b>${esc(p.name)}.</b> ${esc(p.brief)} <span class="faint">${esc(S.content.scenarios[S.scenario])}</span></div>`; }
+  else brief.hidden = true;
+  $("#rpStart").disabled = !S.persona;
+}
+$("#personas").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if(!b) return; S.persona = b.dataset.p; renderPersonas(); });
+$("#scenarioSeg").addEventListener("click", e => { const b = e.target.closest("[data-s]"); if(!b) return; S.scenario = b.dataset.s; renderPersonas(); });
+$("#rpStart").onclick = async () => { if(!S.persona) return; if(!(await warmMic())) return;
+  Runner.open([{ kind:"roleplay", title:"Roleplay: " + S.content.personas[S.persona].name, params:{ persona:S.persona, scenario:S.scenario } }]); };
+
+/* ================= LIBRARY ================= */
+let libSeg = "frameworks";
+function renderLibrary(){
+  $("#libSeg").innerHTML = [["frameworks","Frameworks"],["lessons","Lessons"]].map(([k, l]) => `<button data-l="${k}" aria-pressed="${k === libSeg}">${l}</button>`).join("");
+  const q = $("#libSearch").value.trim().toLowerCase();
+  const stats = (S.history && S.history.framework_stats) || {};
+  if(libSeg === "frameworks"){
+    const groups = [["answer","Answering a question"],["analysis","Explaining a situation"],["story","Telling what happened"],["hostile","Handling a hostile question"],["process","Before you speak"]];
+    let html = "";
+    for(const [g, gl] of groups){
+      const fs = S.content.frameworks.filter(f => f.group === g && (!q || (f.name + " " + f.tagline + " " + f.best_for.join(" ")).toLowerCase().includes(q)));
+      if(!fs.length) continue;
+      html += `<div class="group-head">${gl}</div><div class="list">` + fs.map(f => `
+        <div class="acc" data-fw="${esc(f.id)}">
+          <button class="rowitem" aria-expanded="false"><div><div class="t">${esc(f.name)}</div><div class="d">${esc(f.tagline)}</div></div>
+            <div class="m">${stats[f.id] ? `<span class="mono">${stats[f.id].mean} avg, ${stats[f.id].n} tries</span>` : ""}${CHEV}</div></button>
+          <div class="acc-body" hidden>
+            <ol class="steps">${f.steps.map((s, i) => `<li><span class="k">${i + 1}</span><span><b>${esc(s.label)}</b>${esc(s.cue)}</span></li>`).join("")}</ol>
+            <p class="small"><b style="color:var(--ink)">Use it for:</b> ${f.best_for.map(k => esc(kindLabel(k)).toLowerCase()).join(", ")}. <b style="color:var(--ink)">Avoid:</b> ${esc(f.avoid)}</p>
+            <div class="quote"><div class="q">${esc(f.example_q)}</div><p>${esc(f.example_a)}</p></div>
+            <div class="source">${esc(f.source)}</div>
+            ${f.group === "process" ? "" : `<div style="margin-top:14px;display:flex;gap:12px;align-items:center"><button class="btn btn-primary btn-sm" data-practise="${esc(f.id)}">Practise, three questions</button><span class="small faint">about ${Math.round(f.time_s * 3 / 60) + 2} minutes</span></div>`}
+          </div></div>`).join("") + `</div>`;
+    }
+    $("#libList").innerHTML = html || `<div class="empty">No framework matches that.</div>`;
+  }else{
+    const ls = S.content.lessons.filter(l => !q || (l.title + " " + l.body).toLowerCase().includes(q));
+    $("#libList").innerHTML = `<div class="list">` + ls.map(l => `
+      <div class="acc"><button class="rowitem" aria-expanded="false"><div><div class="t">${esc(l.title)}</div></div><div class="m">${CHEV}</div></button>
+        <div class="acc-body lesson-body" hidden><p>${esc(l.body)}</p><div class="tip">${esc(l.tip)}</div></div></div>`).join("") + `</div>` || `<div class="empty">No lesson matches that.</div>`;
+  }
+}
+$("#libSeg").addEventListener("click", e => { const b = e.target.closest("[data-l]"); if(!b) return; libSeg = b.dataset.l; renderLibrary(); });
+$("#libSearch").addEventListener("input", renderLibrary);
+$("#libList").addEventListener("click", async e => {
+  const p = e.target.closest("[data-practise]");
+  if(p){ if(!(await warmMic())) return; Runner.open([{ kind:"framework", title:"Practise " + fwById(p.dataset.practise).name, params:{ framework:p.dataset.practise } }]); return; }
+  const head = e.target.closest(".acc > .rowitem"); if(!head) return;
+  const open = head.getAttribute("aria-expanded") === "true";
+  $$("#libList .acc > .rowitem").forEach(x => { x.setAttribute("aria-expanded", "false"); x.nextElementSibling.hidden = true; });
+  if(!open){ head.setAttribute("aria-expanded", "true"); head.nextElementSibling.hidden = false; }
+});
+
+/* ================= WORDS ================= */
+async function loadBank(){ S.bank = await api("/jargon/bank"); renderBank(); }
+function renderBank(){
+  if(!S.bank) return;
+  const f = $("#bankFilter").value, q = $("#bankSearch").value.trim().toLowerCase();
+  const all = [...S.bank.seed, ...S.bank.personal];
+  const list = all.filter(e => (!f || e.category === f) && (!q || e.term.toLowerCase().includes(q) || (e.meaning || "").toLowerCase().includes(q)));
+  const due = (S.history && S.history.srs_due) || [];
+  $("#dueText").textContent = due.length ? `${due.length} term${due.length === 1 ? "" : "s"} due: ${due.slice(0, 4).join(", ")}${due.length > 4 ? "…" : ""}.` : "Nothing due. Drill by ear anyway, ten terms at meeting speed.";
+  $("#bank").innerHTML = list.length ? list.map((e, i) => `
+    <div class="term"><button class="term-head" data-term="${i}"><span><b>${esc(e.term)}</b> ${e.use_yourself === false ? '<span class="chip">understand, do not say</span>' : ""}${e.risk ? '<span class="chip bad">check</span>' : ""}<span class="d">${esc(e.meaning)}</span></span><em>${esc((e.category || "").replace(/_/g, " "))}</em></button>
+      <div class="term-more" hidden>${e.plain_alternative ? `<p>Plain version: <b>${esc(e.plain_alternative)}</b></p>` : ""}${e.example ? `<p style="margin-top:6px">${esc(e.example)}</p>` : ""}${e.risk ? `<p style="margin-top:6px;color:var(--bad)">${esc(e.risk)}</p>` : ""}${e.subtext ? `<p style="margin-top:6px">Often means: ${esc(e.subtext)}</p>` : ""}
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="pill" data-say="${esc(e.example || e.term)}">Hear it</button><button class="pill" data-review="${esc(e.term)}" data-q="5">I know this</button><button class="pill" data-review="${esc(e.term)}" data-q="2">Again soon</button></div></div></div>`).join("") : `<div class="empty">Nothing matches that.</div>`;
+}
+$("#bank").addEventListener("click", async e => {
+  const say = e.target.closest("[data-say]"); if(say){ TTS.say(say.dataset.say); return; }
+  const rv = e.target.closest("[data-review]"); if(rv){ try{ const r = await postJson("/jargon/review", { term:rv.dataset.review, quality:+rv.dataset.q }); toast(`${rv.dataset.review}: next review ${r.srs.due}.`); await loadBank(); }catch(err){ toast(err.message); } return; }
+  const b = e.target.closest("[data-term]"); if(!b) return; const body = b.nextElementSibling; body.hidden = !body.hidden;
+});
+$("#bankFilter").onchange = renderBank; $("#bankSearch").oninput = renderBank;
+$("#lookupBtn").onclick = async () => {
+  const term = $("#lookup").value.trim(); if(!term) return;
+  $("#lookupOut").innerHTML = `<p class="small">Looking it up.</p>`;
+  try{ const r = await postJson("/jargon/lookup", { term });
+    if(r.source === "unavailable"){ $("#lookupOut").innerHTML = `<p class="small">${esc(r.reason)}</p>`; return; }
+    const e = r.entry;
+    $("#lookupOut").innerHTML = `<div class="panel" style="margin-bottom:18px"><div class="panel-head"><h2>${esc(e.term)}</h2><span class="meta">${esc((e.category || "").replace(/_/g, " "))}, ${esc(r.source)}</span></div>
+      <p style="font-size:15px;color:var(--ink)">${esc(e.meaning)}</p>${e.plain_alternative ? `<p style="margin-top:8px">Plain version: <b style="color:var(--ink)">${esc(e.plain_alternative)}</b></p>` : ""}${e.example ? `<div class="quote" style="margin:12px 0 0"><p>${esc(e.example)}</p></div>` : ""}${e.risk ? `<p style="margin-top:10px;color:var(--bad)">${esc(e.risk)}</p>` : ""}${e.subtext ? `<p style="margin-top:8px">Often means: ${esc(e.subtext)}</p>` : ""}
+      <div class="kv"><span class="chip ${e.use_yourself ? "accent" : ""}">${e.use_yourself ? "safe to use yourself" : "understand it, do not say it"}</span></div></div>`;
+    if(r.source === "generated") await loadBank();
+  }catch(err){ $("#lookupOut").innerHTML = `<p class="small">${esc(err.message)}</p>`; }
+};
+$("#lookup").addEventListener("keydown", e => { if(e.key === "Enter") $("#lookupBtn").click(); });
+$("#drillBtn").onclick = () => Quiz.ear($("#earHost"), 10);
+
+/* ================= RUNNER ================= */
+const Stage = {
+  set(html){ $("#stage").innerHTML = html; window.scrollTo({ top:0 }); },
+  actions(list){ $("#runActions").innerHTML = list.map(a => `<button class="btn ${a.cls || "btn-primary"}" id="${a.id}" ${a.disabled ? "disabled" : ""}>${a.label}${a.count != null ? `<span class="count">${a.count}</span>` : ""}</button>`).join("");
+    list.forEach(a => { if(a.onClick) $("#" + a.id).onclick = a.onClick; }); },
+  phase(cls, text){ const p = $("#runPhase"); p.className = "phase " + cls; p.querySelector("span").textContent = text; },
+  meter(v, rec){ const m = $("#meterFill"); m.style.width = Math.round(v * 100) + "%"; m.classList.toggle("rec", !!rec); },
+  timer(text){ $("#runTimer").textContent = text || ""; },
+};
+const Runner = {
+  active:false, steps:[], i:0, planMode:false, cancelled:false, cleanup:null,
+  open(steps, { plan = false } = {}){
+    this.steps = steps; this.i = 0; this.planMode = plan; this.cancelled = false; this.active = true;
+    PAGES.forEach(id => $("#page-" + id).hidden = true); $("#runner").hidden = false; $("#actionbar").hidden = false; $("#prefs").hidden = true;
+    this.run();
+  },
+  stepper(){
+    const st = this.steps;
+    $("#stepper").innerHTML = st.length > 1 ? st.map((s, i) => `<div class="s ${i < this.i ? "done" : i === this.i ? "now" : ""}"><i></i>${esc(s.title.split(":")[0])}</div>`).join(`<span class="sep"></span>`) : `<div class="s now"><i></i>${esc(st[0].title)}</div>`;
+  },
+  async run(){
+    while(this.i < this.steps.length && !this.cancelled){
+      const st = this.steps[this.i]; this.stepper(); Stage.timer(""); Stage.meter(0);
+      try{
+        if(st.kind === "lesson") await Lesson.run(st);
+        else if(st.kind === "warmup") await Warmup.run(st);
+        else if(st.kind === "framework") await QDrill.run(drillForFramework(st.params.framework));
+        else if(st.kind === "questions") await QDrill.run(st.drill || exercise(st.params.drill_id));
+        else if(st.kind === "record") await RecordDrill.run(st.drill || exercise(st.params.drill_id));
+        else if(st.kind === "roleplay") await Roleplay.run(st.params.persona, st.params.scenario);
+        else if(st.kind === "quiz") await Quiz.run(st.drill || exercise(st.params.drill_id));
+        else if(st.kind === "drill"){ const d = exercise(st.params.drill_id); if(d.flow === "questions") await QDrill.run(d); else if(d.flow === "quiz") await Quiz.run(d); else await RecordDrill.run(d); }
+      }catch(e){ if(this.cancelled) break; console.error(e); toast("Something went wrong: " + e.message); break; }
+      if(this.cancelled) break;
+      if(this.planMode && st.index != null){ try{ S.plan = await postJson("/plan/step", { index:st.index, done:true }); }catch(e){} }
+      this.i += 1;
+      if(this.i < this.steps.length){ const ok = await this.interstitial(this.steps[this.i]); if(!ok) break; }
+    }
+    if(!this.cancelled) await this.finish();
+  },
+  interstitial(next){
+    return new Promise(res => {
+      Stage.phase("done", "Step done"); this.stepper();
+      Stage.set(`<div class="stage-kicker">Next</div><h1 class="display">${esc(next.title)}</h1><p class="lead">${esc(next.detail || "")}</p>`);
+      autoNext({ label:"Continue", seconds:6, onGo:() => res(true), stay:"Stop here", onStay:() => { this.exit(); res(false); } });
+    });
+  },
+  async finish(){
+    Stage.phase("done", "Session complete"); Stage.actions([]);
+    await refresh().catch(() => {});
+    const h = S.history;
+    const nxt = S.course && S.course.current ? lessonById(S.course.current) : null;
+    Stage.set(`<div class="stage-kicker">Done</div><h1 class="display">${this.planMode ? "That is today's session." : "Done."}</h1>
+      <p class="lead">${nxt ? `Next time on the path: Lesson ${S.course.number[nxt.id]}, ${esc(nxt.title)}. ` : ""}${h.fix_next ? esc(h.fix_next) : ""}</p>`);
+    Stage.actions([{ id:"fin", label:"Back to Today", onClick:() => this.exit() }]);
+  },
+  exit(){ this.cancelled = true; this.active = false; TTS.stop(); if(this.cleanup){ try{ this.cleanup(); }catch(e){} this.cleanup = null; }
+    $("#runner").hidden = true; $("#actionbar").hidden = true; Stage.timer(""); Stage.meter(0);
+    $("#page-" + S.page).hidden = false; refresh().then(() => { renderTrain(); renderLibrary(); }).catch(() => {}); },
+};
+$("#runExit").onclick = () => Runner.exit();
+function exercise(id){ return S.content.exercises.find(e => e.id === id) || S.content.exercises[0]; }
+function drillForFramework(fid){
+  const f = fwById(fid); let mode = "answer";
+  if(fid === "honest-unknown") mode = "gap"; else if(f.best_for.some(k => HOSTILE.has(k))) mode = "hostile";
+  return { id:"fw-" + fid, lvl:0, title:"Practise " + f.name, desc:f.tagline, prompt:`Three questions of the kind ${f.name} was built for. Answer each inside the steps.`,
+    rubric:f.grader, flow:"questions", mode, kinds:f.best_for, n:3, think_s:+S.prefs.think, answer_s:f.time_s, framework:fid, choose_framework:false, time:f.time_s };
+}
+function autoNext({ label, seconds, onGo, stay, onStay }){
+  let left = S.prefs.auto === "on" ? seconds : null, done = false, iv = null;
+  const go = () => { if(done) return; done = true; clearInterval(iv); document.removeEventListener("keydown", key); onGo(); };
+  const key = e => { if(e.target.matches("input,select,textarea")) return; if(e.key === "Enter" || e.key === " "){ e.preventDefault(); go(); } };
+  const render = () => Stage.actions([ ...(stay ? [{ id:"stay", label:stay, cls:"btn-quiet", onClick:() => { clearInterval(iv); left = null; if(onStay){ done = true; document.removeEventListener("keydown", key); onStay(); } else render(); } }] : []),
+    { id:"go", label, count:left != null ? left : null, onClick:go } ]);
+  render(); document.addEventListener("keydown", key);
+  if(left != null) iv = setInterval(() => { left -= 1; if(left <= 0) go(); else render(); }, 1000);
+}
+function verdict(total){ return total == null ? "Not scored" : total >= 85 ? "Excellent" : total >= 70 ? "Strong" : total >= 55 ? "Getting there" : "Rough"; }
+function oneThing(sc, llm){
+  if(!sc) return "";
+  if(sc.caps_applied && sc.caps_applied.length) return sc.caps_applied[0];
+  const structural = (sc.notes || []).find(n => /did not hear|never named|Missing/.test(n));
+  if(structural) return structural;
+  if(llm && llm.one_focus_fix) return llm.one_focus_fix;
+  return (sc.notes || [])[0] || "Clean. Keep it exactly like that.";
+}
+function bars(sc){ if(!sc || !sc.parts) return ""; return `<div class="bars">${Object.entries(sc.parts).map(([k, v]) => { const m = (sc.max || {})[k] || 1, pct = Math.round(v / m * 100);
+  return `<div class="bar"><i>${esc(label(k))}</i><div class="track"><div class="fill ${pct < 55 ? "low" : ""}" style="width:${pct}%"></div></div><u>${v}/${m}</u></div>`; }).join("")}</div>`; }
+const notesHtml = (notes, cls = "") => notes && notes.length ? `<ul class="notes">${notes.map(n => `<li class="${cls}">${esc(n)}</li>`).join("")}</ul>` : "";
+function resultHtml({ total, sub, one, better, sc, llm, transcript, extraHtml = "", kicker = "" }){
+  return `<div class="result"><div><div class="score">${total == null ? "–" : total}<small>${kicker || "score"}</small></div></div>
+    <div><div class="verdict">${verdict(total)}.</div><div class="one">${one ? esc(one) : ""}</div>${sub ? `<div class="sub">${sub}</div>` : ""}${extraHtml}
+      ${better ? `<div class="hint" style="margin-top:12px"><b>Better opening:</b> ${esc(better)}</div>` : ""}
+      ${(sc || transcript) ? `<details class="more"><summary>Details</summary><div class="body">${bars(sc)}${notesHtml(sc && sc.notes)}${sc && sc.caps_applied && sc.caps_applied.length ? notesHtml(sc.caps_applied, "warn") : ""}${transcript ? `<div class="transcript">${esc(transcript)}</div>` : ""}</div></details>` : ""}</div></div>`;
+}
+
+/* ---------------- Warm-up: calibration inside the session ---------------- */
+const Warmup = {
+  async run(step){
+    const p = step.params || { vowel:3, read:1 };
+    let vowels = p.vowel ?? 3, read = p.read ?? 1;
+    for(let k = 1; k <= vowels; k++){
+      if(Runner.cancelled) return;
+      Stage.phase("listen", "Get ready");
+      Stage.set(`<div class="stage-kicker">Warm-up, held note ${k} of ${vowels}</div><h1 class="display">Breathe in, then hold a steady “ah”.</h1>
+        <p class="lead">Comfortable pitch, comfortable volume, no pushing. It stops on its own after eight seconds. This is the only reading that measures shake accurately.</p>
+        <div class="ring" id="ring"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="54"/><circle class="fg" id="ringFg" cx="60" cy="60" r="54"/></svg><b id="ringNum">3</b></div>`);
+      Stage.actions([{ id:"skipWarm", label:"Skip warm-up", cls:"btn-quiet", onClick:() => { vowels = 0; read = 0; this.skip = true; } }]);
+      await this.count(3, "Breathe in"); if(this.skip || Runner.cancelled) break;
+      const res = await this.record(8, "Hold"); if(!res) break;
+      try{ const r = await this.upload(res.blob, "vowel"); Stage.phase("done", `Take ${r.takes.vowel} saved`); await sleep(900); }
+      catch(e){ toast("Could not save the take: " + e.message); }
+    }
+    if(read && !this.skip && !Runner.cancelled){
+      Stage.phase("listen", "Get ready");
+      Stage.set(`<div class="stage-kicker">Warm-up, calm read</div><h1 class="display">Read this aloud, unhurried.</h1>
+        <p class="lead">Sixty seconds, sitting down, as if to one person across the table. Every drill you record later is compared against this.</p>
+        <div class="passage">${esc(S.content.read_passage)}</div>
+        <div class="ring" id="ring"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="54"/><circle class="fg" id="ringFg" cx="60" cy="60" r="54"/></svg><b id="ringNum">3</b></div>`);
+      Stage.actions([]);
+      await this.count(3, "Start when the ring appears");
+      const res = await this.record(60, "Read", true); if(res){
+        try{ await this.upload(res.blob, "read"); Stage.phase("done", "Calm read saved"); await sleep(900); }catch(e){ toast("Could not save the read: " + e.message); } }
+    }
+    this.skip = false;
+    return { done:true };
+  },
+  count(n, text){ return new Promise(res => { Stage.phase("think", text); let left = n; const num = $("#ringNum"); if(num) num.textContent = left;
+    const iv = setInterval(() => { left -= 1; if($("#ringNum")) $("#ringNum").textContent = left; if(left <= 0 || this.skip || Runner.cancelled){ clearInterval(iv); res(); } }, 1000); }); },
+  record(seconds, text, allowDone = false){
+    return new Promise(async res => {
+      const rec = new Recorder((v, db) => Stage.meter(v, true));
+      try{ await rec.start(); }catch(e){ micBlocked(e); return res(null); }
+      Runner.cleanup = () => rec.stop().catch(() => {});
+      Stage.phase("speak", text);
+      const C = 2 * Math.PI * 54, fg = $("#ringFg"); if(fg){ fg.style.strokeDasharray = C; fg.style.strokeDashoffset = 0; }
+      const t0 = Date.now(); let stopped = false;
+      const stop = async () => { if(stopped) return; stopped = true; clearInterval(iv); Runner.cleanup = null; const out = await rec.stop(); Stage.actions([]); res(out); };
+      if(allowDone) Stage.actions([{ id:"doneRead", label:"Done", cls:"btn-rec", onClick:stop }]);
+      const iv = setInterval(() => { const s = (Date.now() - t0) / 1000; const left = Math.max(0, seconds - s);
+        if($("#ringNum")) $("#ringNum").textContent = Math.ceil(left); if(fg) fg.style.strokeDashoffset = C * (s / seconds);
+        Stage.timer(mmss(s)); if(s >= seconds || Runner.cancelled) stop(); }, 200);
+    });
+  },
+  async upload(blob, kind){ const fd = new FormData(); fd.append("audio", blob, kind + ".webm"); fd.append("kind", kind); fd.append("device_id", "default"); return api("/calibrate", { method:"POST", body:fd }); },
+};
+
+/* ---------------- Question drills ---------------- */
+const MODE_HINTS = {
+  gap:"Admit it cleanly. Commit: what you will send, by when, how. Then answer the part you can. Do not guess a number.",
+  paraphrase:"Restate the question with the tone and the loaded words stripped out. One sentence. Do not answer it.",
+  classify:"Start with the word <b>loaded</b>, then <b>because</b> and the assumption. Or say <b>clean</b>.",
+  ask:"There is a term in there you may not know. Ask what it means, name the term, never open with sorry.",
+  comprehend:"Answer the VP. If a term is unclear, ask what it means and then answer. Guessing wrong is the only fail.",
+};
+const QDrill = {
+  async run(d){
+    const cfg = { framework:d.framework || "auto", n:d.n || 3, think:d.think_s ?? +S.prefs.think };
+    const noFw = ["classify","ask","comprehend","paraphrase"].includes(d.mode) && !d.framework;
+    const fixed = d.framework && !d.choose_framework;
+    const ok = await this.ready(d, cfg, noFw, fixed); if(!ok) return;
+    const questions = await this.draw(d, cfg.n); if(!questions.length){ toast("No questions left of that kind. The bank has been reset; run it again."); S.usedQ.clear(); return; }
+    const turns = [];
+    for(let i = 0; i < questions.length && !Runner.cancelled; i++){
+      const q = questions[i];
+      const fid = noFw ? (d.framework || null) : (cfg.framework && cfg.framework !== "auto" ? cfg.framework : q.recommended_framework);
+      const t = await this.ask(d, q, i, questions.length, fid, cfg.think); if(!t) break;
+      turns.push(t);
+      const last = i === questions.length - 1;
+      await new Promise(res => autoNext({ label:last ? "Finish" : "Next question", seconds:8, onGo:res }));
+    }
+    if(Runner.cancelled || !turns.length) return null;
+    return await this.summary(d, turns, cfg);
+  },
+  ready(d, cfg, noFw, fixed){
+    return new Promise(res => {
+      Stage.phase("listen", "Ready");
+      const f = cfg.framework !== "auto" ? fwById(cfg.framework) : null;
+      const fits = S.content.frameworks.filter(x => x.group !== "process" && x.best_for.some(k => d.kinds.includes(k)));
+      Stage.set(`<div class="stage-kicker">${esc({ hostile:"Hostile drill", qa:"Question drill", decode:"Decode drill" }[d.kind] || "Question drill")}</div>
+        <h1 class="display">${esc(d.title)}</h1><p class="lead">${esc(d.prompt)}</p>
+        <div class="ready-meta"><span class="chip">${cfg.n} question${cfg.n === 1 ? "" : "s"}</span>${f ? `<span class="chip accent">${esc(f.name)}</span>` : noFw ? "" : `<span class="chip accent">framework chosen per question</span>`}<span class="chip">think ${cfg.think ? cfg.think + " s" : "none"}</span>${d.rubric ? `<span class="chip">${esc(d.rubric)}</span>` : ""}</div>
+        <div id="scaffoldHost">${f ? this.scaffold(f, d.mode) : (MODE_HINTS[d.mode] ? `<div class="hint">${MODE_HINTS[d.mode]}</div>` : "")}</div>
+        <div class="options" id="opts" hidden>
+          ${noFw ? "" : `<label>Framework <select class="select" id="oFw" ${fixed ? "disabled" : ""}>${fixed ? "" : `<option value="auto">Recommended per question</option>`}${(fixed ? [fwById(d.framework)] : fits).map(x => `<option value="${esc(x.id)}" ${x.id === cfg.framework ? "selected" : ""}>${esc(x.name)}</option>`).join("")}</select></label>`}
+          <label>Questions <select class="select" id="oN" ${d.series ? "disabled" : ""}>${[1,2,3,4,5,6].map(n => `<option ${n === cfg.n ? "selected" : ""}>${n}</option>`).join("")}</select></label>
+          <label>Think time <select class="select" id="oT">${[0,3,5,8].map(n => `<option value="${n}" ${n === cfg.think ? "selected" : ""}>${n ? n + " s" : "none"}</option>`).join("")}</select></label>
+        </div>
+        <p class="small faint" style="margin-top:14px">Each question is read to you, then think time, then the recorder starts by itself. The pause before your first word is measured. Press <span class="kbd">D</span> or Done when you finish.</p>`);
+      const apply = () => { if($("#oFw")) cfg.framework = $("#oFw").value; cfg.n = +$("#oN").value; cfg.think = +$("#oT").value;
+        const f2 = cfg.framework !== "auto" ? fwById(cfg.framework) : null; $("#scaffoldHost").innerHTML = f2 ? this.scaffold(f2, d.mode) : (MODE_HINTS[d.mode] ? `<div class="hint">${MODE_HINTS[d.mode]}</div>` : ""); };
+      $("#opts").addEventListener("change", apply);
+      Stage.actions([{ id:"optsBtn", label:"Options", cls:"btn-quiet", onClick:() => { $("#opts").hidden = !$("#opts").hidden; } }, { id:"startQ", label:"Start", onClick:() => { apply(); res(true); } }]);
+      const key = e => { if(e.target.matches("input,select,textarea")) return; if(e.key === "Enter"){ e.preventDefault(); document.removeEventListener("keydown", key); apply(); res(true); } };
+      document.addEventListener("keydown", key);
+      Runner.cleanup = () => { document.removeEventListener("keydown", key); res(false); };
+    });
+  },
+  scaffold(f, mode){ const hint = MODE_HINTS[mode] ? `<div class="hint">${MODE_HINTS[mode]}</div>` : "";
+    return hint + `<div class="scaffold">${f.steps.map((s, i) => `<span class="step"><b>${i + 1} ${esc(s.label)}</b><span>${esc(s.cue)}</span></span>`).join("")}</div>`; },
+  async draw(d, n){
+    const ex = encodeURIComponent([...S.usedQ].join(","));
+    let questions = [];
+    try{
+      if(d.series){ const r = await api(`/questions?kinds=${d.kinds.join(",")}&n=1&exclude=${ex}`); const base = r.questions[0];
+        if(base){ const tmpl = d.series === "return" ? ["{q}", ...S.content.returns] : S.content.escalations;
+          questions = tmpl.slice(0, n).map((t, i) => ({ ...base, base_id:base.id, id:base.id + "-" + i, text:t.replace("{q}", base.text) })); } }
+      else { const r = await api(`/questions?kinds=${d.kinds.join(",")}&n=${n}&balanced=${!!d.balanced}&exclude=${ex}`); questions = r.questions.map(q => ({ ...q, base_id:q.id })); }
+    }catch(e){ toast("Could not load questions: " + e.message); }
+    questions.forEach(q => S.usedQ.add(q.base_id));
+    return questions;
+  },
+  ask(d, q, i, n, fid, think){
+    return new Promise(async res => {
+      const f = fid ? fwById(fid) : null;
+      Stage.phase("listen", "Listen");
+      Stage.set(`<div class="stage-kicker">Question ${i + 1} of ${n}, ${esc(kindLabel(q.kind).toLowerCase())}${q.hostile ? ", hostile" : ""}${f ? ", " + esc(f.name) : ""}</div>
+        <div class="qtext" id="qText">${esc(q.text)}</div>
+        <div id="scaffoldHost">${f ? this.scaffold(f, d.mode) : (MODE_HINTS[d.mode] ? `<div class="hint">${MODE_HINTS[d.mode]}</div>` : "")}</div>
+        <div class="countdown" id="cd" hidden></div><div id="feedback"></div>`);
+      Stage.actions([{ id:"doneQ", label:"Done", cls:"btn-rec", disabled:true }]);
+      let rec = null, stopped = false, tick = null, spokenAt = null;
+      const finish = async () => {
+        if(!rec || stopped) return; stopped = true; clearInterval(tick); Runner.cleanup = null;
+        document.removeEventListener("keydown", key);
+        Stage.actions([{ id:"scoring", label:"Scoring", disabled:true }]); Stage.phase("score", "Scoring");
+        const onset = rec.onsetAt; const { blob, seconds } = await rec.stop();
+        const latency = onset && spokenAt ? +((onset - spokenAt) / 1000).toFixed(2) : null;
+        try{
+          const fd = new FormData(); fd.append("audio", blob, "answer.webm"); fd.append("drill_id", d.id.startsWith("fw-") ? "lightning" : d.id);
+          fd.append("mode", "qdrill"); fd.append("duration_s", seconds.toFixed(2)); fd.append("store", "false"); fd.append("audience", S.prefs.audience);
+          const t = await api("/transcribe", { method:"POST", body:fd });
+          const prior = (this.prior || []).map(x => ({ acoustics:x.acoustics, text:x.text }));
+          const truth = { loaded:q.loaded, premise:q.premise, real_question:q.real_question, parts:q.parts, term:q.term };
+          const r = await postJson("/qa-score", { question:q.text, kind:q.kind, mode:d.mode, framework:fid, transcript:t.transcript, duration_s:seconds, latency_s:latency, truth, acoustics:t.acoustics, prior_turns:prior });
+          const turn = { question:q.text, question_id:q.base_id, kind:q.kind, transcript:t.transcript, framework:fid, mode:d.mode, text:t.text, acoustics:t.acoustics, score:r.score, latency_s:latency, result:r };
+          (this.prior = this.prior || []).push(turn);
+          $("#feedback").innerHTML = this.feedback(turn, q, d);
+          this.revealTerm(q);
+          Stage.phase("done", r.available ? "Scored" : "Scored, model offline");
+          res(turn);
+        }catch(err){ toast("Scoring failed: " + err.message); Stage.phase("done", "Failed"); res(null); }
+      };
+      const key = e => { if(e.target.matches("input,select,textarea")) return; if((e.key === "d" || e.key === "D" || e.key === "Enter") && rec && !stopped){ e.preventDefault(); finish(); } if(e.key === " " && $("#cd") && !$("#cd").hidden){ e.preventDefault(); this.skipThink = true; } };
+      document.addEventListener("keydown", key);
+      Runner.cleanup = () => { document.removeEventListener("keydown", key); if(rec) rec.stop().catch(() => {}); res(null); };
+      await TTS.say(q.text); if(Runner.cancelled) return;
+      if(think > 0){ Stage.phase("think", "Think"); const cd = $("#cd"); cd.hidden = false; let left = think; cd.textContent = left; this.skipThink = false;
+        Stage.actions([{ id:"skipT", label:"Skip the think time", cls:"btn-quiet", onClick:() => { this.skipThink = true; } }]);
+        while(left > 0 && !this.skipThink && !Runner.cancelled){ await sleep(1000); left -= 1; cd.textContent = left; } cd.hidden = true; }
+      if(Runner.cancelled) return;
+      rec = new Recorder((v) => Stage.meter(v, true));
+      try{ await rec.start(); }catch(e){ micBlocked(e); return res(null); }
+      spokenAt = performance.now(); Stage.phase("speak", "Speak now");
+      Stage.actions([{ id:"doneQ", label:"Done", cls:"btn-rec", onClick:finish }]);
+      const t0 = Date.now(); tick = setInterval(() => { const s = (Date.now() - t0) / 1000; Stage.timer(`${mmss(s)} / ${mmss(d.answer_s)}`); if(s > d.answer_s + 10) finish(); }, 200);
+    });
+  },
+  feedback(turn, q, d){
+    const r = turn.result, sc = r.score || {}, llm = r.llm || {};
+    let extra = "";
+    if(d.mode === "gap" && r.extra && r.extra.gap){ const g = r.extra.gap; extra = `<div class="kv"><span class="chip ${g.admitted ? "accent" : "bad"}">${g.admitted ? "admitted the gap" : "no clean admission"}</span><span class="chip ${g.committed ? "accent" : "bad"}">${g.committed ? "committed" : "no commitment"}</span><span class="chip ${g.guessed ? "bad" : "accent"}">${g.guessed ? "guessed" : "no guess"}</span><span class="chip ${g.apologised ? "bad" : "accent"}">${g.apologised ? "apologised" : "no apology"}</span></div>`; }
+    if((d.mode === "ask" || d.mode === "comprehend") && r.extra && r.extra.ask){ const a = r.extra.ask; extra = `<div class="kv"><span class="chip ${a.asked ? "accent" : "bad"}">${a.asked ? "asked" : "did not ask"}</span><span class="chip ${a.term_named ? "accent" : ""}">${a.term_named ? "named the term" : "term not named"}</span><span class="chip ${a.apologised ? "bad" : "accent"}">${a.apologised ? "apologised" : "no apology"}</span></div><p class="sub" style="margin-top:8px">The term was <b>${esc(q.term)}</b>. <span id="termMeaning"></span></p>`; }
+    if(d.mode === "classify") extra = `<p class="sub">Truth: <b>${q.loaded ? "loaded" : "clean"}</b>${q.premise ? `, the premise was that ${esc(q.premise)}` : ""}.</p>`;
+    if(q.hostile && d.mode === "hostile" && (q.premise || q.parts || q.real_question)) extra = `<p class="sub">${q.premise ? `Premise to reject: <b>${esc(q.premise)}</b>. ` : ""}${q.parts ? `Two questions: ${q.parts.map(esc).join(" / ")}. ` : ""}${q.real_question ? `Real question: ${esc(q.real_question)}` : ""}</p>`;
+    const sub = [turn.latency_s != null ? `Beat before your first word: ${turn.latency_s}s` : null, sc.possible && sc.possible < 100 ? `Out of ${sc.possible} measurable points` : null, llm.hostility_type ? esc(llm.hostility_type.replace(/_/g, " ")) : null].filter(Boolean).join(", ");
+    return resultHtml({ total:sc.total, one:oneThing(sc, llm), sub, better:llm.better_opening || llm.what_they_should_have_said, sc, llm, transcript:turn.transcript || r.reason, extraHtml:extra });
+  },
+  async revealTerm(q){ if(!q.term || !$("#termMeaning")) return; try{ const r = await postJson("/jargon/lookup", { term:q.term }); if(r.entry && $("#termMeaning")) $("#termMeaning").textContent = r.entry.meaning + (r.entry.plain_alternative ? ` Plain version: ${r.entry.plain_alternative}.` : ""); }catch(e){} },
+  async summary(d, turns, cfg){
+    let saved = null;
+    try{ saved = await postJson("/sessions/series", { mode:"qdrill", drill:d.id, drill_title:d.title, framework:cfg.framework && cfg.framework !== "auto" ? cfg.framework : (d.framework || null), series:d.series || null,
+      turns:turns.map(t => ({ question:t.question, question_id:t.question_id, kind:t.kind, transcript:t.transcript, framework:t.framework, mode:t.mode, text:t.text, acoustics:t.acoustics, score:t.score, latency_s:t.latency_s })) }); }
+    catch(e){ toast("Could not save the session: " + e.message); }
+    this.prior = [];
+    const sum = (saved && saved.summary) || { mean:null, series_score:null, notes:[] };
+    const best = turns.slice().sort((a, b) => ((b.score || {}).total || 0) - ((a.score || {}).total || 0))[0];
+    Stage.phase("done", "Drill complete");
+    Stage.set(`<div class="stage-kicker">${esc(d.title)}</div>
+      ${resultHtml({ total:sum.mean, kicker:"average", one:sum.notes && sum.notes[0] ? sum.notes[0] : (best && best.score ? `Best answer: ${best.score.total}, on “${best.question}”.` : ""), sub:sum.series_score != null ? `Series score ${sum.series_score}` : null, sc:null })}
+      <div class="summary-rows list">${turns.map((t, i) => `<div class="rowitem"><span class="num">${i + 1}</span><div><div class="t" style="font-weight:500">${esc(t.question)}</div><div class="d">${esc(kindLabel(t.kind))}${t.framework ? ", " + esc((fwById(t.framework) || {name:t.framework}).name) : ""}</div></div><div class="m"><span class="mono" style="font-size:16px;color:var(--ink)">${t.score && t.score.total != null ? t.score.total : "–"}</span></div></div>`).join("")}</div>`);
+    await new Promise(res => autoNext({ label:"Continue", seconds:8, onGo:res }));
+    return { mean:sum.mean };
+  },
+};
+
+/* ---------------- Record drills ---------------- */
+const RecordDrill = {
+  run(d){
+    return new Promise(res => {
+      Stage.phase("listen", "Ready");
+      Stage.set(`<div class="stage-kicker">${d.source === "generated" ? "Generated drill" : "Speaking drill"}, ${mmss(d.time)}</div><h1 class="display">${esc(d.title)}</h1><p class="lead">${esc(d.prompt)}</p>
+        ${d.rubric ? `<div class="ready-meta"><span class="chip">${esc(d.rubric)}</span><span class="chip">audience: ${esc(label(S.prefs.audience))}</span></div>` : ""}
+        <div id="feedback"></div><p class="small faint" style="margin-top:14px">Press <span class="kbd">R</span> to start and stop.</p>`);
+      let rec = null, tick = null, busy = false;
+      const toggle = async () => {
+        if(busy) return;
+        if(rec){ busy = true; clearInterval(tick); Stage.phase("score", "Scoring"); Stage.actions([{ id:"scoring", label:"Scoring", disabled:true }]);
+          const { blob, seconds } = await rec.stop(); rec = null; Runner.cleanup = null;
+          try{ const fd = new FormData(); fd.append("audio", blob, "take.webm"); fd.append("drill_id", d.id); fd.append("mode", "practice"); fd.append("audience", S.prefs.audience); fd.append("duration_s", seconds.toFixed(2)); fd.append("store", "true");
+            const s = await api("/transcribe", { method:"POST", body:fd });
+            const sc = s.score, j = s.jargon_score;
+            $("#feedback").innerHTML = resultHtml({ total:sc.total, one:oneThing(sc, null), sub:[sc.possible < 100 ? `Out of ${sc.possible} measurable points` : null, j && j.notes.length ? `Language ${j.score} of 100` : null].filter(Boolean).join(", "), sc:{ ...sc, notes:[...sc.notes, ...(j ? j.notes : []), ...(s.acoustics && s.acoustics.baseline_note ? [s.acoustics.baseline_note] : [])] }, transcript:s.transcript || (s.asr ? "" : "No transcript: transcription is off or still loading.") }) + `<div id="coach"></div>`;
+            Stage.phase("done", "Scored"); document.removeEventListener("keydown", key);
+            this.coach(s, d);
+            autoNext({ label:"Continue", seconds:12, onGo:() => res({ total:sc.total }), stay:"Run it again", onStay:() => { document.removeEventListener("keydown", key); this.run(d).then(res); } });
+          }catch(err){ toast("Scoring failed: " + err.message); Stage.phase("done", "Failed"); busy = false; Stage.actions([{ id:"recBtn", label:"Start recording", cls:"btn-rec", onClick:toggle }]); }
+          return; }
+        rec = new Recorder(v => Stage.meter(v, true));
+        try{ await rec.start(); }catch(e){ rec = null; return micBlocked(e); }
+        Runner.cleanup = () => rec && rec.stop().catch(() => {});
+        Stage.phase("speak", "Recording"); Stage.actions([{ id:"recBtn", label:"Stop and score", onClick:toggle }]);
+        const t0 = Date.now(); tick = setInterval(() => { const s = (Date.now() - t0) / 1000; Stage.timer(`${mmss(s)} / ${mmss(d.time)}`); if(s > d.time + 25) toggle(); }, 200);
+      };
+      const key = e => { if(e.target.matches("input,select,textarea")) return; if(e.key === "r" || e.key === "R"){ e.preventDefault(); toggle(); } };
+      document.addEventListener("keydown", key);
+      Stage.actions([{ id:"recBtn", label:"Start recording", cls:"btn-rec", onClick:toggle }]);
+    });
+  },
+  async coach(s, d){
+    if(!S.health.llm || !s.transcript || !$("#coach")) return;
+    $("#coach").innerHTML = `<p class="small faint" style="margin-top:10px">Coaching note on the way…</p>`;
+    try{ const c = await postJson("/coach", { transcript:s.transcript, drill:d, metrics:{ wpm:s.text.pace.wpm, filler_pct:s.text.fillers.pct, hedge_per_100w:s.text.hedges.per_100w, duration_s:s.text.pace.duration_s } });
+      if(!c.available || !$("#coach")){ if($("#coach")) $("#coach").innerHTML = ""; return; }
+      $("#coach").innerHTML = `<div class="hint" style="margin-top:14px"><b>Content and structure, ${c.content_score_0_20} of 20.</b> ${esc(c.structure_note)} <b>Next time:</b> ${esc(c.one_focus_fix)}</div>`;
+    }catch(e){ if($("#coach")) $("#coach").innerHTML = ""; }
+  },
+};
+
+/* ---------------- Roleplay: a video call with a talking head ---------------- */
+const ICON = {
+  cam:`<svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg>`,
+  camOff:`<svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/><path d="M2 2l20 20"/></svg>`,
+  mic:`<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>`,
+  micOff:`<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M2 2l20 20"/></svg>`,
+  cc:`<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 10a2 2 0 1 0 0 4M17 10a2 2 0 1 0 0 4"/></svg>`,
+  sound:`<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>`,
+  soundOff:`<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4zM17 9l4 6M21 9l-4 6"/></svg>`,
+  leave:`<svg viewBox="0 0 24 24"><path d="M3 9c5-3.5 13-3.5 18 0v4l-4 1-2-3c-2-.7-4-.7-6 0l-2 3-4-1V9z"/></svg>`,
+  hint:`<svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-4 10.5V16h8v-2.5A6 6 0 0 0 12 3zM10 20h4"/></svg>`,
+};
+const Roleplay = {
+  async run(personaKey, scenarioKey){
+    const p = S.content.personas[personaKey], actor = actorFor(personaKey);
+    const rp = { history:[], turns:[], hostile:!!p.hostile, persona:personaKey, scenario:scenarioKey,
+                 avatar:null, rec:null, cam:null, captions:true, leaving:false, t0:Date.now(), timer:null, finishAnswer:null };
+    // The call takes over the runner: its own top bar, tiles, side panel and control bar.
+    $("#actionbar").hidden = true; $(".runner-top").hidden = true; $("#runner").classList.add("wide");
+    Stage.set(`
+      <div class="call" id="call">
+        <div class="call-top"><div><b>${esc(String(S.content.scenarios[scenarioKey]).replace(/\.\s*$/, ""))}</b>, with ${esc(p.name)}</div>
+          <span class="call-status" id="callStatus">Connecting</span><span class="mono" id="callClock">0:00</span></div>
+        <div class="call-body">
+          <div class="call-stage">
+            <div class="tile main" id="tilePersona">${actor ? `<img class="tile-bg" src="${API}/avatars/${esc(actor)}/${esc((((S.content.avatars || {}).actors || {})[actor] || {states:{}}).states.idle ? S.content.avatars.actors[actor].states.idle[0] : "idle-1.jpg")}" alt="">` : ""}<div class="initials">${esc(p.name.replace(/^The /, "")[0])}</div>
+              <div class="name"><span class="dot"></span>${esc(p.name)}</div><div class="captions" id="captions" hidden></div></div>
+            <div class="tile pip" id="tileYou"><div class="initials">You</div><video id="selfCam" autoplay muted playsinline hidden></video>
+              <div class="name"><span class="dot"></span>You <span class="faint" id="youState">· listening</span></div><div class="lvl"><i id="youLvl"></i></div></div>
+          </div>
+          <aside class="call-panel"><div class="ph">Conversation</div><div class="pbody" id="callChat"></div></aside>
+        </div>
+        <div class="call-bar">
+          <button class="cbtn off" id="micBtn" disabled>${ICON.micOff}<span>Mic</span></button>
+          <button class="cbtn" id="camBtn">${ICON.cam}<span>Camera</span></button>
+          <button class="cbtn" id="ccBtn">${ICON.cc}<span>Captions</span></button>
+          <button class="cbtn ${speakOn() ? "" : "off"}" id="sndBtn">${speakOn() ? ICON.sound : ICON.soundOff}<span>Voice</span></button>
+          <button class="cbtn" id="hintBtn">${ICON.hint}<span>Coach</span></button>
+          <button class="cbtn done" id="doneBtn" disabled>Done answering</button>
+          <button class="cbtn leave" id="leaveBtn">${ICON.leave}<span>Leave</span></button>
+        </div>
+        <div class="leave-confirm" id="leaveConfirm" hidden><span>Leave the conversation? Your answers so far are kept.</span>
+          <button class="btn btn-sm" id="leaveYes" style="background:#d64545;color:#fff">Leave</button>
+          <button class="btn btn-sm" id="leaveNo" style="background:#2a2e34;color:#fff">Stay</button></div>
+      </div>`);
+    if(actor){ rp.avatar = new Avatar(actor, "tile-av"); $("#tilePersona").prepend(rp.avatar.el); $("#tilePersona").insertAdjacentHTML("beforeend", '<div class="grain"></div>'); $("#tilePersona .initials").hidden = true; }
+    $("#camBtn").onclick = () => this.camera(rp, !rp.cam);
+    $("#ccBtn").onclick = () => { rp.captions = !rp.captions; $("#ccBtn").classList.toggle("off", !rp.captions); const c = $("#captions"); c.hidden = !rp.captions || !c.textContent; };
+    $("#sndBtn").onclick = () => { S.prefs.voices = speakOn() ? "off" : "on"; savePrefs(); $("#sndBtn").classList.toggle("off", !speakOn());
+      $("#sndBtn").innerHTML = (speakOn() ? ICON.sound : ICON.soundOff) + "<span>Voice</span>"; if(!speakOn()) TTS.stop(); };
+    $("#hintBtn").onclick = () => { $$("#callChat .cmsg.hint").forEach(h => { h.hidden = !h.hidden; }); $("#hintBtn").classList.toggle("off"); };
+    $("#leaveBtn").onclick = () => { $("#leaveConfirm").hidden = false; };
+    $("#leaveNo").onclick = () => { $("#leaveConfirm").hidden = true; };
+    $("#leaveYes").onclick = () => { $("#leaveConfirm").hidden = true; this.leave(rp); };
+    rp.timer = setInterval(() => { const c = $("#callClock"); if(c) c.textContent = mmss((Date.now() - rp.t0) / 1000); }, 1000);
+    Runner.cleanup = () => this.teardown(rp);
+    await this.camera(rp, true);
+    await sleep(700);
+    if(Runner.cancelled || rp.leaving) return this.teardown(rp);
+    this.status("Connected");
+    let turnInfo = null;
+    for(let turn = 0; turn < 4 && !Runner.cancelled && !rp.leaving; turn++){
+      this.status(`Turn ${turn + 1} of 4`);
+      try{ turnInfo = await postJson("/roleplay-turn", { persona:personaKey, scenario:scenarioKey, history:rp.history, unanswerable:rp.hostile && turn === 2, turns:4 }); }
+      catch(e){ toast("The other side did not respond: " + e.message); break; }
+      if(!turnInfo.available){ toast(turnInfo.reason || "No turn."); break; }
+      if(rp.leaving) break;
+      const q = turnInfo.question;
+      rp.history.push({ role:"persona", text:turnInfo.reply, question_id:q.id });
+      this.chat("them", p.name, turnInfo.reply);
+      this.caption(rp, turnInfo.reply);
+      const f = fwById(q.recommended_framework);
+      this.chat("hint", "Coach", f ? `${kindLabel(q.kind)}. Use ${f.name}: ${f.steps.map(s => s.label).join(", ")}.` : kindLabel(q.kind));
+      $("#tilePersona").classList.add("speaking"); $("#youState").textContent = "· listening";
+      await TTS.say(turnInfo.reply, { avatar:rp.avatar, onWord:() => rp.avatar && rp.avatar.mouth() });
+      $("#tilePersona").classList.remove("speaking");
+      if(Runner.cancelled || rp.leaving) break;
+      if(turnInfo.closing) break;
+      const answer = await this.answer(rp, q); if(!answer) break;
+      rp.turns.push(answer);
+      if(rp.avatar){ const t = (answer.score || {}).total; rp.avatar.react(t == null ? "glance" : t >= 70 ? "smile" : t >= 50 ? "glance" : (rp.hostile ? "skeptical" : "surprised")); }
+      if(turnInfo.done) break;
+      await sleep(1400);
+    }
+    const left = rp.leaving;
+    this.teardown(rp);
+    if(Runner.cancelled) return null;
+    return await this.summary(rp, p, left);
+  },
+  status(t){ const s = $("#callStatus"); if(s) s.textContent = t; },
+  caption(rp, text){ const c = $("#captions"); if(!c) return; c.textContent = text || ""; c.hidden = !rp.captions || !text; },
+  chat(cls, who, text){
+    const host = $("#callChat"); if(!host) return null;
+    const m = document.createElement("div"); m.className = "cmsg " + cls;
+    m.innerHTML = `<div class="who">${esc(who)}</div><div>${esc(text)}</div>`;
+    if(cls === "hint" && $("#hintBtn") && $("#hintBtn").classList.contains("off")) m.hidden = true;
+    host.appendChild(m); host.scrollTop = host.scrollHeight; return m;
+  },
+  async camera(rp, on){
+    const v = $("#selfCam"), btn = $("#camBtn"); if(!v || !btn) return;
+    if(!on){ if(rp.cam){ rp.cam.getTracks().forEach(t => t.stop()); rp.cam = null; } v.hidden = true; v.srcObject = null;
+      btn.classList.add("off"); btn.innerHTML = ICON.camOff + "<span>Camera</span>"; return; }
+    const attach = st => { if(rp.torn){ st.getTracks().forEach(t => t.stop()); return; } rp.cam = st; v.srcObject = st; v.hidden = false;
+      btn.classList.remove("off"); btn.innerHTML = ICON.cam + "<span>Camera</span>"; };
+    const off = () => { rp.cam = null; v.hidden = true; btn.classList.add("off"); btn.innerHTML = ICON.camOff + "<span>Camera off</span>"; };
+    try{
+      // The permission prompt can sit unanswered. Do not hold the call for it:
+      // carry on after six seconds and attach the camera whenever it arrives.
+      const req = navigator.mediaDevices.getUserMedia({ video:{ width:640, height:480, facingMode:"user" } });
+      const st = await Promise.race([req, sleep(6000).then(() => null)]);
+      if(st) attach(st); else { off(); req.then(attach).catch(() => {}); }
+    }catch(e){ off(); }
+  },
+  leave(rp){ rp.leaving = true; TTS.stop(); this.status("Leaving"); if(rp.finishAnswer) rp.finishAnswer(true); },
+  teardown(rp){
+    if(rp.torn) return; rp.torn = true;
+    clearInterval(rp.timer); if(rp.avatar) rp.avatar.destroy(); if(rp.rec) rp.rec.stop().catch(() => {});
+    if(rp.cam) rp.cam.getTracks().forEach(t => t.stop());
+    $("#actionbar").hidden = false; $(".runner-top").hidden = false; $("#runner").classList.remove("wide"); Stage.timer("");
+  },
+  answer(rp, q){
+    return new Promise(async res => {
+      const tile = $("#tileYou"), lvl = $("#youLvl");
+      const rec = new Recorder(v => { if(lvl) lvl.style.width = Math.round(v * 100) + "%"; if(tile) tile.classList.toggle("speaking", v > 0.32); });
+      try{ await rec.start(); }catch(e){ micBlocked(e); rp.micError = true; return res(null); }
+      rp.rec = rec; const spokenAt = performance.now(); let stopped = false;
+      const mic = $("#micBtn"), done = $("#doneBtn");
+      mic.disabled = false; mic.className = "cbtn live"; mic.innerHTML = ICON.mic + "<span>Live</span>";
+      $("#youState").textContent = "· speaking"; done.disabled = false;
+      this.status("Your answer");
+      const finish = async (abandon = false) => {
+        if(stopped) return; stopped = true; clearInterval(tick); rp.finishAnswer = null; document.removeEventListener("keydown", key);
+        mic.disabled = true; mic.className = "cbtn off"; mic.innerHTML = ICON.micOff + "<span>Mic</span>";
+        done.disabled = true; $("#youState").textContent = "· listening"; if(tile) tile.classList.remove("speaking"); if(lvl) lvl.style.width = "0%";
+        const onset = rec.onsetAt; const { blob, seconds } = await rec.stop(); rp.rec = null;
+        if(abandon || seconds < 1.5) return res(null);
+        const latency = onset ? +((onset - spokenAt) / 1000).toFixed(2) : null;
+        this.status("Scoring"); this.caption(rp, "Scoring your answer");
+        try{
+          const fd = new FormData(); fd.append("audio", blob, "answer.webm"); fd.append("drill_id", "lightning"); fd.append("mode", "roleplay");
+          fd.append("duration_s", seconds.toFixed(2)); fd.append("store", "false");
+          const s = await api("/transcribe", { method:"POST", body:fd });
+          this.chat("you", "You", s.transcript || "(nothing transcribed)");
+          rp.history.push({ role:"user", text:s.transcript });
+          const mode = q.hostile ? "hostile" : "answer";
+          const r = await postJson("/qa-score", { question:q.text, kind:q.kind, mode, framework:q.recommended_framework, transcript:s.transcript,
+            duration_s:seconds, latency_s:latency, truth:{ loaded:q.loaded, premise:q.premise, real_question:q.real_question, parts:q.parts, term:q.term },
+            acoustics:s.acoustics, prior_turns:rp.turns.map(x => ({ acoustics:x.acoustics, text:x.text })) });
+          const turn = { question:q.text, question_id:q.id, kind:q.kind, transcript:s.transcript, framework:q.recommended_framework, mode,
+            text:s.text, acoustics:s.acoustics, score:r.score, latency_s:latency, result:r };
+          const sc = r.score || {}, llm = r.llm || {};
+          const better = llm.what_they_should_have_said || llm.better_opening;
+          const m = this.chat("score", "Score", "");
+          if(m){ m.innerHTML = `<div class="who">Score</div><div class="sline"><b>${sc.total == null ? "–" : sc.total}</b><span>${verdict(sc.total)}.</span></div>
+            <div style="margin-top:4px">${esc(oneThing(sc, llm))}</div>${better ? `<div class="faint" style="margin-top:6px">Better opening: ${esc(better)}</div>` : ""}
+            <details class="more"><summary>Details</summary><div class="body">${bars(sc)}${notesHtml(sc.notes)}${sc.caps_applied && sc.caps_applied.length ? notesHtml(sc.caps_applied, "warn") : ""}${s.transcript ? `<div class="transcript">${esc(s.transcript)}</div>` : ""}</div></details>`;
+            $("#callChat").scrollTop = $("#callChat").scrollHeight; }
+          this.caption(rp, `${verdict(sc.total)}. ${oneThing(sc, llm)}`);
+          res(turn);
+        }catch(err){ toast("Scoring failed: " + err.message); res(null); }
+      };
+      rp.finishAnswer = finish;
+      const key = e => { if(e.target.matches("input,select,textarea")) return; if(e.key === "d" || e.key === "D" || e.key === "Enter"){ e.preventDefault(); finish(); } };
+      document.addEventListener("keydown", key);
+      done.onclick = () => finish(); mic.onclick = () => finish();
+      const t0 = Date.now(); const tick = setInterval(() => { if((Date.now() - t0) / 1000 > 75) finish(); }, 250);
+    });
+  },
+  async summary(rp, p, left){
+    let saved = null;
+    if(rp.turns.length){ try{ saved = await postJson("/sessions/series", { mode:"roleplay", drill:"roleplay-" + rp.persona, drill_title:"Roleplay: " + p.name, persona:rp.persona, scenario:rp.scenario, series:null,
+      turns:rp.turns.map(t => ({ question:t.question, question_id:t.question_id, kind:t.kind, transcript:t.transcript, framework:t.framework, mode:t.mode, text:t.text, acoustics:t.acoustics, score:t.score, latency_s:t.latency_s })) }); }catch(e){ toast("Could not save: " + e.message); } }
+    const mean = saved && saved.summary ? saved.summary.mean : null;
+    Stage.phase("done", left ? "You left the call" : "Call ended");
+    const n = rp.turns.length;
+    Stage.set(`<div class="stage-kicker">Roleplay with ${esc(p.name)}, ${mmss((Date.now() - rp.t0) / 1000)}</div>${resultHtml({ total:mean, kicker:"average",
+      one:n === 0 ? (rp.micError ? MIC_HELP : "No answers were recorded.") : rp.hostile ? "On a hostile call the number to watch is whether your voice held, not whether the content was clever." : "Run the same setting against a hostile character next. The gap between the two is the whole point.",
+      sub:left ? `You left after ${n} answer${n === 1 ? "" : "s"}.` : `${n} answer${n === 1 ? "" : "s"} recorded.`, sc:null })}
+      <div class="summary-rows list">${rp.turns.map((t, i) => `<div class="rowitem"><span class="num">${i + 1}</span><div><div class="t" style="font-weight:500">${esc(t.question)}</div><div class="d">${esc(kindLabel(t.kind))}${t.framework ? ", " + esc((fwById(t.framework) || {name:t.framework}).name) : ""}</div></div><div class="m"><span class="mono" style="font-size:16px;color:var(--ink)">${t.score && t.score.total != null ? t.score.total : "–"}</span></div></div>`).join("")}</div>`);
+    const again = await new Promise(res => autoNext({ label:"Continue", seconds:8, onGo:() => res(null), stay:"Call again", onStay:() => { this.run(rp.persona, rp.scenario).then(res); } }));
+    return again || { mean };
+  },
+};
+
+/* ---------------- Typed quizzes ---------------- */
+const Quiz = {
+  async run(d){
+    Stage.phase("listen", "Typed"); Stage.actions([]);
+    Stage.set(`<div class="stage-kicker">Decode drill</div><h1 class="display">${esc(d.title)}</h1><p class="lead">${esc(d.prompt)}</p><div id="quizHost" style="margin-top:18px"></div>`);
+    return await new Promise(res => { if(d.quiz === "ear") this.ear($("#quizHost"), d.n || 10, res); else this.sort($("#quizHost"), d.n || 20, res); });
+  },
+  async ear(host, n, onDone){
+    if(!TTS.available()) { host.innerHTML = `<div class="empty">No voice available. Install Kokoro or use a browser with speech synthesis.</div>`; return; }
+    let items; try{ items = (await api(`/quiz/ear?n=${n}`)).items; }catch(e){ host.innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
+    let i = 0, got = 0;
+    const speakItem = () => TTS.say(items[i].example || items[i].term, { rate:1.25 });
+    const render = () => {
+      if(i >= items.length){ host.innerHTML = `<div class="result"><div><div class="score">${got}<small>of ${items.length}</small></div></div><div><div class="verdict">${got >= items.length * 0.8 ? "Sharp." : got >= items.length * 0.5 ? "Getting there." : "Keep drilling."}</div><div class="one">Missed terms come back sooner. Today shows what is due.</div></div></div>`;
+        if(onDone) autoNext({ label:"Continue", seconds:8, onGo:() => onDone({ score:Math.round(got / items.length * 100) }) }); else Stage.actions([]); refresh().catch(() => {}); return; }
+      const it = items[i];
+      host.innerHTML = `<div class="panel"><div class="panel-head"><h2>Heard at meeting speed, ${i + 1} of ${items.length}</h2><button class="btn-quiet" id="qzReplay">Replay</button></div>
+        <input class="input input-lg" id="qzGuess" placeholder="What does it mean?" autocomplete="off">
+        <div id="qzAnswer" hidden style="margin-top:14px"><div class="quote"><div class="q">${esc(it.term)} <span class="chip">${esc((it.category || "").replace(/_/g, " "))}</span></div><p>${esc(it.meaning)}${it.plain ? ` Plain version: <b>${esc(it.plain)}</b>.` : ""}</p>${it.example ? `<p class="small faint" style="margin-top:6px">${esc(it.example)}</p>` : ""}</div>
+          <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary btn-sm" id="qzGot">Got it</button><button class="btn btn-ghost btn-sm" id="qzMissed">Missed it</button></div></div></div>`;
+      $("#qzReplay").onclick = speakItem; $("#qzGuess").focus();
+      const reveal = () => { $("#qzAnswer").hidden = false; };
+      $("#qzGuess").addEventListener("keydown", e => { if(e.key === "Enter") reveal(); });
+      Stage.actions([{ id:"qzReveal", label:"Reveal", cls:"btn-ghost", onClick:reveal }]);
+      const mark = async quality => { if(quality >= 4) got += 1; try{ await postJson("/jargon/review", { term:it.term, quality }); }catch(e){} i += 1; render(); if(i < items.length) speakItem(); };
+      $("#qzGot").onclick = () => mark(5); $("#qzMissed").onclick = () => mark(2);
+    };
+    render(); speakItem();
+  },
+  async sort(host, n, onDone){
+    let items; try{ items = (await api(`/quiz/sort?n=${n}`)).items; }catch(e){ host.innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
+    const answers = new Map();
+    const render = () => {
+      const done = answers.size === items.length, right = [...answers.values()].filter(Boolean).length;
+      host.innerHTML = `<p class="small">If a plain word means the same thing, it is <b>substitutable</b>. If the plain version loses precision, it is <b>technical</b>. ${done ? `<b>${right} of ${items.length} right.</b>` : `${answers.size} of ${items.length} sorted.`}</p>
+        <div style="margin-top:8px">${items.map((it, idx) => { const a = answers.has(idx) ? (answers.get(idx) ? "right" : "wrong") : "";
+          return `<div class="sort-row"><div><b>${esc(it.term)}</b>${answers.has(idx) ? `<div class="why">${a === "right" ? "Right. " : "No, " + it.answer + ". "}${esc(it.why)}</div>` : ""}</div>
+            <div class="btns"><button class="pill ${answers.has(idx) && it.answer === "technical" ? (a === "right" ? "right" : "") : ""}" data-idx="${idx}" data-pick="technical" ${answers.has(idx) ? "disabled" : ""}>technical</button><button class="pill ${answers.has(idx) && it.answer === "substitutable" ? (a === "right" ? "right" : "") : ""}" data-idx="${idx}" data-pick="substitutable" ${answers.has(idx) ? "disabled" : ""}>substitutable</button></div></div>`; }).join("")}</div>`;
+      if(done && onDone) autoNext({ label:"Continue", seconds:10, onGo:() => onDone({ score:Math.round(right / items.length * 100) }) });
+    };
+    host.onclick = e => { const b = e.target.closest("[data-pick]"); if(!b || b.disabled) return; const idx = +b.dataset.idx; answers.set(idx, items[idx].answer === b.dataset.pick); render(); };
+    render();
+  },
+};
+
+
+/* ---------------- Lessons: teach, show, try, feedback ---------------- */
+const Lesson = {
+  async run(step, fast = false){
+    const l = lessonById(step.params.lesson); if(!l) return null;
+    const total = S.content.course.lessons.length, n = S.content.course.lessons.indexOf(l) + 1;
+    const unit = S.content.course.units.find(u => u.n === l.unit);
+    const f = l.framework ? fwById(l.framework) : null;
+    const written = l.teach_from ? S.content.lessons.find(x => x.id === l.teach_from) : null;
+    if(!fast){
+      const go = await this.teach(l, n, total, unit, f, written); if(!go || Runner.cancelled) return null;
+      if(f || l.demo){ const ok = await this.demo(l, n, f); if(!ok || Runner.cancelled) return null; }
+    }
+    const result = await this.attempt(l); if(Runner.cancelled) return null;
+    return await this.wrap(l, n, total, f, result, step.params.review);
+  },
+  teach(l, n, total, unit, f, written){
+    return new Promise(res => {
+      Stage.phase("listen", "Lesson"); Stage.timer(`${l.minutes} min`);
+      Stage.set(`<div class="stage-kicker">Lesson ${n} of ${total}. Unit ${l.unit}, ${esc(unit.name)}</div>
+        <h1 class="display">${esc(l.title)}</h1>
+        <p class="lead"><b>After this you can:</b> ${esc(l.goal)}</p>
+        <div class="teach"><p>${esc(l.teach)}</p>${written ? `<p>${esc(written.body)}</p><div class="tip">${esc(written.tip)}</div>` : ""}</div>
+        ${f ? `<div class="teach-fw"><h3>${esc(f.name)}: ${esc(f.tagline)}</h3><ol class="steps">${f.steps.map((st, i) => `<li><span class="k">${i + 1}</span><span><b>${esc(st.label)}</b>${esc(st.cue)}</span></li>`).join("")}</ol><p class="small faint" style="margin-top:6px">Avoid: ${esc(f.avoid)}</p></div>` : ""}`);
+      TTS.say(l.goal);
+      const done = ok => { document.removeEventListener("keydown", key); TTS.stop(); res(ok); };
+      const key = e => { if(e.target.matches("input,select,textarea")) return; if(e.key === "Enter"){ e.preventDefault(); done(true); } };
+      document.addEventListener("keydown", key);
+      Stage.actions([{ id:"skipL", label:"Not now", cls:"btn-quiet", onClick:() => done(false) },
+                     { id:"goL", label:(f || l.demo) ? "Show me" : "Now I try", onClick:() => done(true) }]);
+      Runner.cleanup = () => done(false);
+    });
+  },
+  actorFor(l, n){ return (l.demo && l.demo.actor) || (n % 2 ? "woman" : "man"); },
+  demo(l, n, f){
+    return new Promise(async res => {
+      const q = (l.demo && l.demo.question) || (f && f.example_q) || "", a = (l.demo && l.demo.answer) || (f && f.example_a) || "";
+      const actors = (S.content.avatars || {}).actors || {};
+      const actor = this.actorFor(l, n);
+      const have = !!actors[actor];
+      Stage.phase("listen", "Watch");
+      Stage.set(`<div class="stage-kicker">${esc(l.title)}: a model answer</div>
+        <div class="demo">
+          <div class="tile main demo-tile" id="demoTile">${have ? `<img class="tile-bg" src="${API}/avatars/${esc(actor)}/${esc(actors[actor].states.idle[0])}" alt="">` : `<div class="initials">C</div>`}
+            <div class="name"><span class="dot"></span>${esc(have ? actors[actor].label : "Coach")}</div></div>
+          <div><p class="small faint">The question</p><div class="qtext" style="font-size:22px;margin-top:4px">${esc(q)}</div>
+            ${f ? `<div class="scaffold">${f.steps.map((st, i) => `<span class="step"><b>${/^\d/.test(st.label) ? "" : (i + 1) + " "}${esc(st.label)}</b></span>`).join("")}</div>` : ""}
+            <p class="small faint" style="margin-top:18px">${esc(have ? actors[actor].label : "The coach")} answers</p>
+            <p class="lead" id="demoText" style="margin-top:4px;font-size:15.5px;max-width:52ch">${esc(a)}</p></div>
+        </div>`);
+      let av = null; if(have){ av = new Avatar(actor, "tile-av"); $("#demoTile").prepend(av.el); $("#demoTile").insertAdjacentHTML("beforeend", '<div class="grain"></div>'); }
+      let finished = false;
+      const finish = ok => { if(finished) return; finished = true; TTS.stop(); if(av) av.destroy(); res(ok); };
+      Runner.cleanup = () => finish(false);
+      const play = async () => { $("#demoTile").classList.add("speaking");
+        await TTS.say(a, { avatar:av }); if($("#demoTile")) $("#demoTile").classList.remove("speaking"); };
+      Stage.actions([{ id:"again", label:"Hear it again", cls:"btn-ghost", onClick:play }, { id:"tryL", label:"Now I try", onClick:() => finish(true) }]);
+      await play();
+    });
+  },
+  async attempt(l){
+    const t = l.try;
+    if(t.kind === "warmup") return await Warmup.run({ params:{ vowel:3, read:1 } });
+    if(t.kind === "record") return await RecordDrill.run(exercise(t.drill_id));
+    if(t.kind === "roleplay") return await Roleplay.run(t.persona, t.scenario);
+    if(t.kind === "quiz") return await Quiz.run(exercise(t.drill_id));
+    if(t.kind === "drill"){ const d = { ...exercise(t.drill_id) }; if(t.n) d.n = t.n;
+      if(d.flow === "quiz") return await Quiz.run(d); if(d.flow === "questions") return await QDrill.run(d); return await RecordDrill.run(d); }
+    const f = fwById(t.framework);
+    const d = { id:"lesson-" + l.id, lvl:0, title:l.title, desc:l.goal, prompt:l.teach, rubric:"", flow:"questions",
+      mode:t.mode || "answer", kinds:t.kinds, n:t.n || 2, think_s:t.think_s ?? +S.prefs.think, answer_s:t.answer_s || 45,
+      framework:t.framework, choose_framework:false, time:t.answer_s || 45 };
+    return await QDrill.run(d);
+  },
+  async wrap(l, n, total, f, result, review){
+    const score = result ? (result.mean ?? result.total ?? result.score ?? null) : null;
+    if(l.pass != null && score == null){
+      Stage.phase("done", "Not scored"); Stage.timer("");
+      Stage.set(`<div class="stage-kicker">Lesson ${n} of ${total}</div><h1 class="display">Nothing was scored.</h1>
+        <p class="lead">No answer came through, so this lesson stays where it is. ${$("#notice").hidden ? "Try it again when you are ready." : "Allow the microphone first, then try again."}</p>`);
+      const retry = await new Promise(res => {
+        Stage.actions([{ id:"notNow", label:"Not now", cls:"btn-quiet", onClick:() => res(false) }, { id:"retryL", label:"Try again", onClick:() => res(true) }]);
+        Runner.cleanup = () => res(false);
+      });
+      Runner.cleanup = null;
+      if(retry && !Runner.cancelled) return await this.run({ params:{ lesson:l.id, review } }, true);
+      return null;
+    }
+    let courseState = null;
+    try{ courseState = await postJson("/course/complete", { lesson:l.id, score }); S.course = courseState; }catch(e){ toast("Could not save progress: " + e.message); }
+    const star = l.pass != null && score != null && score >= l.pass;
+    const next = courseState && courseState.current ? lessonById(courseState.current) : null;
+    Stage.phase("done", "Lesson complete"); Stage.timer("");
+    Stage.set(`<div class="stage-kicker">Lesson ${n} of ${total} ${review ? "reviewed" : "complete"}</div>
+      ${resultHtml({ total:score, kicker:score == null ? "done" : "score", sc:null,
+        one:score == null ? "Done. This lesson is not scored; it sets the app up for the rest." : star ? `That earns the star for ${l.title}.` : l.pass != null ? `The star needs ${l.pass}. This lesson comes back as a review until you get there.` : "" })}
+      ${f ? `<div class="hint" style="margin-top:14px"><b>The shape you were using:</b> ${esc(f.name)}, ${f.steps.map(st => esc(st.label)).join(", then ")}.</div>` : ""}
+      ${next ? `<p class="lead" style="margin-top:18px"><b>Next on the path:</b> ${esc(next.title)}. ${esc(next.goal)}</p>` : `<p class="lead" style="margin-top:18px">That was the last lesson. From here the path brings back what you were weakest at.</p>`}`);
+    const again = await new Promise(res => {
+      autoNext({ label:"Continue", seconds:10, onGo:() => res(false), stay:"Do it again", onStay:() => res(true) });
+      if(f){ const b = document.createElement("button"); b.className = "btn btn-ghost"; b.textContent = "Hear the model answer"; b.onclick = () => TTS.say(f.example_a, { voice:TTS.voiceForActor(this.actorFor(l, n)) }); $("#runActions").prepend(b); }
+    });
+    if(again && !Runner.cancelled) return await this.run({ params:{ lesson:l.id, review } }, true);
+    return { score };
+  },
+};
+
+document.addEventListener("keydown", e => { if(e.key === "Escape" && Runner.active) Runner.exit(); });
+boot();
+</script>
+</body>
+</html>

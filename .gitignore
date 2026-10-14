@@ -1,0 +1,22 @@
+# Personal practice records and local runtime state
+data/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+*.log
+.pytest_cache/
+.coverage
+htmlcov/
+node_modules/
+dist/
+*.zip
+# Original media and local authoring notes are not part of this release
+Avatar pictures/
+REBUILD.md
+

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#214b40">
+  <title>Stage Time — Speaking practice, thoughtfully built with AI</title>
+  <meta name="description" content="Explore Stage Time: an interactive speaking-practice demo and an applied-AI product case study. Built using BMAD discovery and Claude-assisted development.">
+  <meta property="og:title" content="Stage Time — From discovery to an AI product prototype">
+  <meta property="og:description" content="Try a guided lesson, explore a roleplay, and see the product decisions behind an AI-assisted speaking coach.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./content.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header wrap">
+    <a class="brand" href="#demo" aria-label="Stage Time home"><span class="brand-mark">s.</span><span>Stage Time</span></a>
+    <nav aria-label="Main navigation">
+      <a class="nav-link" href="#demo" data-page="demo">The experience</a>
+      <a class="nav-link" href="#story" data-page="story">Product story</a>
+      <a class="source-link" href="https://github.com/yazym-dotcom/stage-time" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+  <main id="main" class="wrap">
+    <section id="demo-page">
+      <div class="hero">
+        <div><p class="eyebrow">A space to practise. A clearer way to speak.</p>
+          <h1>Find your voice.<br><em>Make your point.</em></h1>
+          <p class="hero-copy">Build the habit of answering clearly, finding your pace, and holding your ground. One thoughtful practice session at a time.</p>
+          <div class="hero-actions"><a class="button primary" href="#lesson">Explore a lesson <span aria-hidden="true">→</span></a><a class="text-link" href="#story">Read the product story <span aria-hidden="true">↗</span></a></div>
+        </div>
+        <aside class="hero-note"><span class="note-number">01 /</span><p class="serif">Good speaking begins<br>before the spotlight.</p><p>A personal prototype exploring guided learning, useful feedback, and thoughtful AI integration.</p><div class="byline">BMAD discovery <span>→</span> Claude-assisted build</div></aside>
+      </div>
+      <div class="demo-disclosure"><span class="status-dot" aria-hidden="true"></span><strong>Interactive demo</strong><span>Explore with sample answers and illustrative feedback. No microphone, account, or installation needed.</span></div>
+      <section class="experience" id="experience" aria-label="Explore Stage Time">
+        <div class="experience-top"><div role="tablist" aria-label="Demo experiences" id="experience-tabs">
+          <button role="tab" id="tab-lesson" aria-controls="panel-lesson" aria-selected="true" data-tab="lesson">Guided lesson</button>
+          <button role="tab" id="tab-roleplay" aria-controls="panel-roleplay" aria-selected="false" tabindex="-1" data-tab="roleplay">Roleplay</button>
+          <button role="tab" id="tab-library" aria-controls="panel-library" aria-selected="false" tabindex="-1" data-tab="library">Framework library</button>
+        </div><span class="small muted desktop-note">A preview of the local application</span></div>
+        <div id="panel-lesson" role="tabpanel" aria-labelledby="tab-lesson" class="lesson-layout">
+          <aside class="curriculum"><div class="section-label"><span>Your learning path</span><span>29 lessons</span></div><div id="lesson-path"></div></aside>
+          <div class="lesson-stage"><div class="stage-top"><span class="eyebrow" id="lesson-unit"></span><span class="pill" id="lesson-time"></span></div><h2 id="lesson-title"></h2><p class="lesson-goal" id="lesson-goal"></p>
+            <ol class="steps" aria-label="Lesson stages"><li id="phase-0" aria-current="step">01 <span>Learn</span></li><li id="phase-1">02 <span>Example</span></li><li id="phase-2">03 <span>Feedback</span></li></ol>
+            <div id="lesson-body" aria-live="polite"></div>
+            <div class="lesson-footer"><button class="text-button" id="lesson-back" hidden>← Back</button><button class="button primary" id="lesson-next">See an example <span aria-hidden="true">→</span></button></div>
+          </div>
+        </div>
+        <div id="panel-roleplay" role="tabpanel" aria-labelledby="tab-roleplay" hidden>
+          <div class="roleplay-layout"><div class="roleplay-visual"><img src="./assets/dana.jpg" alt="AI-generated practice character Dana" width="384" height="512"><div class="persona-caption"><span class="live-chip">Simulated conversation</span><h2 id="persona-name">The challenger</h2><p>Practise staying clear under pressure.</p></div></div>
+            <div class="roleplay-content"><div class="stage-top"><span class="eyebrow">A different kind of rehearsal</span><span class="pill">Scripted demo</span></div><h2>Take the question.<br>Keep your composure.</h2><label class="field-label" for="persona-select">Choose your practice partner</label><select id="persona-select"><option value="premise">The challenger</option><option value="specifics">The numbers person</option><option value="friendly">Curious colleague</option></select><div id="conversation" aria-live="polite"></div><div id="roleplay-options"></div><p class="fine-print">Prewritten branches illustrate the experience. In the local app, a local language model can generate follow-up questions.</p></div>
+          </div>
+        </div>
+        <div id="panel-library" role="tabpanel" aria-labelledby="tab-library" hidden>
+          <div class="library-heading"><div><span class="eyebrow">A shape for every answer</span><h2>Find your framework.</h2></div><div class="search-wrap"><label for="framework-search">Search 35 frameworks</label><input type="search" id="framework-search" placeholder="Try PREP, STAR, or a tough question"></div></div>
+          <div class="library-filters" role="group" aria-label="Filter frameworks"><button data-filter="all" aria-pressed="true">All frameworks</button><button data-filter="answer" aria-pressed="false">Clear answers</button><button data-filter="story" aria-pressed="false">Tell a story</button><button data-filter="analysis" aria-pressed="false">Explain a decision</button><button data-filter="hostile" aria-pressed="false">Handle pressure</button><button data-filter="process" aria-pressed="false">Think first</button></div>
+          <p class="small muted" id="library-count" aria-live="polite"></p><div id="framework-list"></div>
+        </div>
+      </section>
+      <div class="scope-strip"><div><strong>29</strong><span>guided lessons</span></div><div><strong>35</strong><span>answer frameworks</span></div><div><strong>153</strong><span>practice questions</span></div><div><strong>11</strong><span>roleplay personas</span></div><p>Built into the local prototype.<br>Explore a selection in this demo.</p></div>
+      <a href="#story" class="story-teaser"><div><span class="eyebrow">The thinking behind the experience</span><h2>From an idea to an AI-assisted product.</h2><p>The problem, the build process, the tradeoffs, and what needs validating next.</p></div><span class="round-arrow" aria-hidden="true">↗</span></a>
+    </section>
+    <section id="story-page" hidden>
+      <div class="story-hero"><p class="eyebrow">Independent product project / Applied AI</p><h1>A product idea.<br><em>A working prototype.</em></h1><p class="hero-copy">Stage Time is my exploration of how AI can help turn a speaking-practice concept into a useful product experience.</p><div class="story-meta"><span>Discovery with BMAD</span><span>Development with Claude</span><span>Personally tested prototype</span></div></div>
+      <div class="story-columns"><aside class="story-index"><span class="eyebrow">Inside the project</span><a href="#problem">01 / The problem</a><a href="#process">02 / How I built it</a><a href="#decisions">03 / Product tradeoffs</a><a href="#validation">04 / What comes next</a><a class="text-link" href="#lesson">Explore the demo ↗</a></aside><article class="story-article">
+        <section id="problem"><span class="eyebrow">01 / Problem framing</span><h2>Practice needs a little more structure.</h2><p>The product hypothesis: people who want to communicate more clearly could benefit from a private place to rehearse, a shape for their answers, and one useful thing to improve after each attempt.</p><p>Stage Time turns that idea into a repeatable loop: learn a technique, see an example, practise, and review feedback. A guided path gives the user a next step; free practice offers room to explore.</p><blockquote>How might we make speaking practice easier to repeat, and the feedback easier to act on?</blockquote><p class="fine-print">This is a product hypothesis. External user research and evidence of speaking improvement have not yet been collected.</p></section>
+        <section id="process"><span class="eyebrow">02 / My AI-assisted workflow</span><h2>Discovery → implementation → personal testing.</h2><p>I used the BMAD framework for discovery and brainstorming, then used Claude to help code the application. I used the resulting app myself and consider it a working prototype.</p><div class="process-step"><span>01</span><div><h3>Explore the problem with BMAD</h3><p>Use a structured discovery and brainstorming process to develop the idea. This was concept exploration, not a completed customer research study.</p></div></div><div class="process-step"><span>02</span><div><h3>Build with Claude</h3><p>Use AI-assisted coding to turn the concept into an application with lessons, roleplay, speech analysis, and feedback. AI assistance is part of the development story.</p></div></div><div class="process-step"><span>03</span><div><h3>Use the prototype personally</h3><p>Explore the experience firsthand and assess its readiness as a prototype. External usability testing is the next step.</p></div></div><p class="note">Two roles for AI: it assisted development, and local AI models support transcription and coaching inside the application. This browser demo uses curated examples.</p></section>
+        <section id="decisions"><span class="eyebrow">03 / Decisions reflected in the product</span><h2>Useful AI needs product boundaries.</h2><div class="decision"><h3>Give practice a clear starting point</h3><p><strong>Implementation:</strong> A guided path with short lessons, examples, and feedback.</p><p><strong>Tradeoff:</strong> Structure can reduce choice overload, while free practice preserves flexibility. Whether this helps people return still needs testing.</p></div><div class="decision"><h3>Separate measurement from interpretation</h3><p><strong>Implementation:</strong> Rules calculate signals such as pace and fillers; a language model supports coaching and answer-structure assessment.</p><p><strong>Tradeoff:</strong> Explicit measurements make parts of the feedback easier to explain. Model judgments and transcripts remain fallible.</p></div><div class="decision"><h3>Keep speech processing local</h3><p><strong>Implementation:</strong> Local transcription, acoustic analysis, and an optional local coaching model.</p><p><strong>Tradeoff:</strong> Less dependence on paid APIs and local handling of speech, with heavier installation and hardware requirements.</p></div><div class="decision"><h3>Keep the experience usable when a service is off</h3><p><strong>Implementation:</strong> Bank-based questions and available measurements remain usable when optional models are unavailable.</p><p><strong>Tradeoff:</strong> Feedback becomes less complete. The interface needs to explain what was and was not assessed.</p></div></section>
+        <section id="validation"><span class="eyebrow">04 / Current stage & next experiment</span><h2>A prototype, with a clear next question.</h2><p>The app has been used by its creator. It has not yet been tested with external users, and there are no measured claims of adoption, learning improvement, or business impact.</p><div class="validation-box"><h3>Proposed next step: a small usability pilot</h3><ul><li>Can a new user start a first practice session without help?</li><li>Can they explain what the feedback means?</li><li>Can they name one change to try in their next answer?</li><li>Would they return to practise, and what gets in the way?</li></ul><p>Use observed task completion, points of confusion, and follow-up feedback to prioritise the next iteration.</p></div><p>This project demonstrates moving from concept exploration to an AI-assisted prototype. The next phase is learning whether the experience solves the intended problem for other people.</p><a class="button primary" href="https://github.com/yazym-dotcom/stage-time" target="_blank" rel="noopener noreferrer">Explore the source on GitHub ↗</a></section>
+      </article></div>
+    </section>
+  </main>
+  <footer class="wrap"><a class="brand footer-brand" href="#demo">Stage Time</a><p>An independent applied-AI product prototype.<br>Sample content in this demo is illustrative.</p><a href="https://github.com/yazym-dotcom/stage-time" target="_blank" rel="noopener noreferrer">Source & setup ↗</a></footer>
+  <dialog id="framework-dialog" aria-labelledby="dialog-title"><button class="dialog-close" aria-label="Close framework">×</button><div id="dialog-content"></div></dialog>
+  <noscript><p class="wrap">This interactive demo needs JavaScript. The product case study and local application are also available in the GitHub repository.</p></noscript>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Optional: Kokoro spoken voices for the roleplay personas and the ear drills.
+# Apache 2.0, about 330 MB of weights on first use, plus PyTorch.
+# Only needed if you prefer these voices to the ones built into your browser.
+# Kokoro supports Python 3.10 through 3.12 only.
+#
+#   <venv python> -m pip install -r requirements-voices.txt
+#
+kokoro>=0.9; python_version < "3.13"
+soundfile>=0.12

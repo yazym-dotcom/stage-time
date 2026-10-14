@@ -1,0 +1,1337 @@
+{
+  "version": "1.0",
+  "locale": "en-US",
+  "context": "US finance, banking operations, process consulting",
+  "notes": "category drives the jargon_density bucket. technical terms are deliberately NOT in this bank: BPMN gateway, swimlane, SLA, RCSA, KYC, straight-through processing and similar are precise domain language and must never be flagged. use_yourself=false means understand it, do not say it.",
+  "buckets": {
+    "corporate": [
+      "corporate_jargon",
+      "acronym"
+    ],
+    "figurative": [
+      "idiom",
+      "sports_metaphor",
+      "military_metaphor"
+    ],
+    "neutral": [
+      "phrasal_verb"
+    ],
+    "flagged": [
+      "ambiguous"
+    ]
+  },
+  "entries": [
+    {
+      "term": "run it by",
+      "category": "phrasal_verb",
+      "meaning": "show something to someone for their opinion before finalising",
+      "plain_alternative": "check with",
+      "example": "Let me run it by Dana before we send it.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "circle back",
+      "category": "phrasal_verb",
+      "meaning": "return to a topic later",
+      "plain_alternative": "come back to this",
+      "example": "Let's circle back on pricing next week.",
+      "risk": null,
+      "subtext": "often means we are not deciding today",
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "loop in",
+      "category": "phrasal_verb",
+      "meaning": "add someone to a conversation or email thread",
+      "plain_alternative": "include",
+      "example": "I'll loop in Risk on the next thread.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "push back",
+      "category": "phrasal_verb",
+      "meaning": "disagree or resist, usually professionally",
+      "plain_alternative": "challenge, disagree",
+      "example": "I pushed back on the timeline.",
+      "risk": "also means to delay a date; context decides which",
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "flesh out",
+      "category": "phrasal_verb",
+      "meaning": "add detail to something outlined",
+      "plain_alternative": "develop, add detail",
+      "example": "Can you flesh out slide four?",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "take it offline",
+      "category": "phrasal_verb",
+      "meaning": "stop discussing it in this meeting",
+      "plain_alternative": "discuss separately",
+      "example": "Let's take that offline.",
+      "risk": null,
+      "subtext": "often means not in front of these people",
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "walk me through",
+      "category": "phrasal_verb",
+      "meaning": "explain step by step",
+      "plain_alternative": "explain step by step",
+      "example": "Walk me through the exception path.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "drill down",
+      "category": "phrasal_verb",
+      "meaning": "examine in more detail",
+      "plain_alternative": "look closer at",
+      "example": "Drill down into the Q3 variance.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "double down",
+      "category": "phrasal_verb",
+      "meaning": "commit harder to an existing position",
+      "plain_alternative": "commit further",
+      "example": "We doubled down on automation.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "dial it back",
+      "category": "phrasal_verb",
+      "meaning": "reduce intensity or scope",
+      "plain_alternative": "scale back",
+      "example": "Dial back the scope for phase one.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "roll out",
+      "category": "phrasal_verb",
+      "meaning": "launch or deploy in stages",
+      "plain_alternative": "launch",
+      "example": "We roll out to LOB2 in March.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "ramp up",
+      "category": "phrasal_verb",
+      "meaning": "increase gradually",
+      "plain_alternative": "increase",
+      "example": "Ramp up testing next sprint.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "weigh in",
+      "category": "phrasal_verb",
+      "meaning": "give your opinion",
+      "plain_alternative": "comment",
+      "example": "Can Legal weigh in?",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "sign off",
+      "category": "phrasal_verb",
+      "meaning": "formally approve",
+      "plain_alternative": "approve",
+      "example": "We need VP sign off.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "spin up",
+      "category": "phrasal_verb",
+      "meaning": "start something new quickly, often a team or environment",
+      "plain_alternative": "start, create",
+      "example": "Spin up a working group.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "stand up",
+      "category": "phrasal_verb",
+      "meaning": "establish something new, usually a team or process",
+      "plain_alternative": "set up",
+      "example": "We stood up the intake process in six weeks.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "carve out",
+      "category": "phrasal_verb",
+      "meaning": "separate a piece from a larger whole",
+      "plain_alternative": "separate out",
+      "example": "Carve out the retail flows.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "back into",
+      "category": "phrasal_verb",
+      "meaning": "work backwards from a target to derive inputs",
+      "plain_alternative": "work backwards to",
+      "example": "Back into the headcount from the volume.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "tee up",
+      "category": "phrasal_verb",
+      "meaning": "prepare something so it is ready for someone else to act on",
+      "plain_alternative": "set up, prepare",
+      "example": "I'll tee up the deck for Thursday.",
+      "risk": "golf metaphor",
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "socialise",
+      "category": "phrasal_verb",
+      "meaning": "share an idea informally to build support before formalising it",
+      "plain_alternative": "share, discuss",
+      "example": "Socialise it with the leads first.",
+      "risk": null,
+      "subtext": "means build consensus quietly first",
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "bake in",
+      "category": "phrasal_verb",
+      "meaning": "include something from the start so it cannot be removed later",
+      "plain_alternative": "build in",
+      "example": "Bake the controls into the design.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "unpack",
+      "category": "phrasal_verb",
+      "meaning": "break something down and examine it",
+      "plain_alternative": "break down",
+      "example": "Let's unpack that assumption.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "park that",
+      "category": "phrasal_verb",
+      "meaning": "set a topic aside for now",
+      "plain_alternative": "set aside",
+      "example": "Let's park that for now.",
+      "risk": null,
+      "subtext": "usually means it will not come back",
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "get ahead of",
+      "category": "phrasal_verb",
+      "meaning": "address something before it becomes a problem",
+      "plain_alternative": "pre-empt",
+      "example": "We need to get ahead of the audit finding.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "pare down",
+      "category": "phrasal_verb",
+      "meaning": "reduce to essentials",
+      "plain_alternative": "cut back",
+      "example": "Pare the list down to five.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "bubble up",
+      "category": "phrasal_verb",
+      "meaning": "raise an issue to a higher level",
+      "plain_alternative": "escalate",
+      "example": "Bubble that up to the steering committee.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "ballpark",
+      "category": "sports_metaphor",
+      "meaning": "a rough estimate",
+      "plain_alternative": "rough estimate",
+      "example": "Give me a ballpark on effort.",
+      "risk": "baseball",
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "home run",
+      "category": "sports_metaphor",
+      "meaning": "a complete success",
+      "plain_alternative": "big success",
+      "example": "That demo was a home run.",
+      "risk": "baseball",
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "punt",
+      "category": "sports_metaphor",
+      "meaning": "give up on something for now and pass it along",
+      "plain_alternative": "postpone, hand off",
+      "example": "Let's punt on that decision.",
+      "risk": "American football; unrelated to UK punt meaning bet",
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "curveball",
+      "category": "sports_metaphor",
+      "meaning": "an unexpected difficulty",
+      "plain_alternative": "surprise",
+      "example": "Compliance threw us a curveball.",
+      "risk": "baseball",
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "touch base",
+      "category": "sports_metaphor",
+      "meaning": "have a brief check-in",
+      "plain_alternative": "check in",
+      "example": "Let's touch base Friday.",
+      "risk": "baseball",
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "on deck",
+      "category": "sports_metaphor",
+      "meaning": "next in line",
+      "plain_alternative": "next up",
+      "example": "Youness is on deck for the demo.",
+      "risk": "baseball",
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "hail mary",
+      "category": "sports_metaphor",
+      "meaning": "a desperate last attempt",
+      "plain_alternative": "last resort",
+      "example": "This is a hail mary.",
+      "risk": "American football",
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "slam dunk",
+      "category": "sports_metaphor",
+      "meaning": "something certain to succeed",
+      "plain_alternative": "a sure thing",
+      "example": "The business case is a slam dunk.",
+      "risk": "basketball",
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "full-court press",
+      "category": "sports_metaphor",
+      "meaning": "an all-out coordinated effort",
+      "plain_alternative": "all-out effort",
+      "example": "We need a full-court press on adoption.",
+      "risk": "basketball",
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "moving the goalposts",
+      "category": "sports_metaphor",
+      "meaning": "changing the criteria after work has started",
+      "plain_alternative": "changing the requirements",
+      "example": "They keep moving the goalposts.",
+      "risk": "football/soccer, understood widely",
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "drop the ball",
+      "category": "sports_metaphor",
+      "meaning": "fail to do something you were responsible for",
+      "plain_alternative": "miss something",
+      "example": "We dropped the ball on the handoff.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "in the weeds",
+      "category": "idiom",
+      "meaning": "stuck in excessive detail, or overwhelmed",
+      "plain_alternative": "too far into detail",
+      "example": "We are in the weeds on naming.",
+      "risk": null,
+      "subtext": "can mean either lost in detail or drowning in work",
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "run with it",
+      "category": "phrasal_verb",
+      "meaning": "take ownership and proceed without further checking",
+      "plain_alternative": "take it forward",
+      "example": "Good idea, run with it.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "boots on the ground",
+      "category": "military_metaphor",
+      "meaning": "people physically present doing the work",
+      "plain_alternative": "people on site",
+      "example": "We need boots on the ground in Ohio.",
+      "risk": "military",
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "war room",
+      "category": "military_metaphor",
+      "meaning": "a dedicated space or session for an urgent problem",
+      "plain_alternative": "command centre, focus room",
+      "example": "Set up a war room for cutover.",
+      "risk": "military",
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "fire drill",
+      "category": "military_metaphor",
+      "meaning": "an urgent unplanned scramble, often avoidable",
+      "plain_alternative": "scramble, emergency",
+      "example": "Friday turned into a fire drill.",
+      "risk": null,
+      "subtext": "usually critical of poor planning",
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "bandwidth",
+      "category": "corporate_jargon",
+      "meaning": "available capacity or time",
+      "plain_alternative": "capacity, time",
+      "example": "I do not have bandwidth this week.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "deep dive",
+      "category": "corporate_jargon",
+      "meaning": "a detailed examination",
+      "plain_alternative": "detailed review",
+      "example": "Let's do a deep dive on exceptions.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "leverage",
+      "category": "corporate_jargon",
+      "meaning": "use",
+      "plain_alternative": "use",
+      "example": "Leverage the existing API.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "operationalise",
+      "category": "corporate_jargon",
+      "meaning": "turn a plan into working process",
+      "plain_alternative": "put into practice",
+      "example": "Operationalise the framework.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "synergy",
+      "category": "corporate_jargon",
+      "meaning": "combined benefit from working together",
+      "plain_alternative": "combined benefit",
+      "example": "There is synergy across the LOBs.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "ideate",
+      "category": "corporate_jargon",
+      "meaning": "generate ideas",
+      "plain_alternative": "brainstorm",
+      "example": "Let's ideate on this.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "low-hanging fruit",
+      "category": "idiom",
+      "meaning": "the easiest wins available",
+      "plain_alternative": "easy wins",
+      "example": "Start with the low-hanging fruit.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "boil the ocean",
+      "category": "idiom",
+      "meaning": "attempt something impossibly large in scope",
+      "plain_alternative": "take on too much",
+      "example": "We are trying to boil the ocean.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "move the needle",
+      "category": "idiom",
+      "meaning": "make a measurable difference",
+      "plain_alternative": "make a real difference",
+      "example": "Will this move the needle?",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "north star",
+      "category": "corporate_jargon",
+      "meaning": "the single guiding goal or metric",
+      "plain_alternative": "main goal",
+      "example": "Cycle time is our north star.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "level-set",
+      "category": "corporate_jargon",
+      "meaning": "get everyone to a shared understanding of the facts",
+      "plain_alternative": "get aligned on the facts",
+      "example": "Let me level-set before we go on.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "book of work",
+      "category": "corporate_jargon",
+      "meaning": "the full portfolio of committed projects",
+      "plain_alternative": "project portfolio",
+      "example": "It is in next year's book of work.",
+      "risk": "common in banking",
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "blocker",
+      "category": "corporate_jargon",
+      "meaning": "something preventing progress",
+      "plain_alternative": "obstacle",
+      "example": "The blocker is the data feed.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "lift",
+      "category": "corporate_jargon",
+      "meaning": "the amount of effort required",
+      "plain_alternative": "effort",
+      "example": "That is a big lift.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "t-shirt sizing",
+      "category": "corporate_jargon",
+      "meaning": "rough effort estimation using S, M, L",
+      "plain_alternative": "rough sizing",
+      "example": "Let's t-shirt size these.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "table stakes",
+      "category": "corporate_jargon",
+      "meaning": "the minimum required to compete at all",
+      "plain_alternative": "the bare minimum",
+      "example": "Real-time reporting is table stakes now.",
+      "risk": "poker",
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "optics",
+      "category": "corporate_jargon",
+      "meaning": "how something will be perceived rather than its substance",
+      "plain_alternative": "perception",
+      "example": "The optics are bad.",
+      "risk": null,
+      "subtext": "often a signal that the substance is fine but the appearance is not",
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "cadence",
+      "category": "corporate_jargon",
+      "meaning": "the regular rhythm of meetings or delivery",
+      "plain_alternative": "schedule, rhythm",
+      "example": "Set a weekly cadence.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "granular",
+      "category": "corporate_jargon",
+      "meaning": "detailed at a fine level",
+      "plain_alternative": "detailed",
+      "example": "Get more granular on the drivers.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "actionable",
+      "category": "corporate_jargon",
+      "meaning": "specific enough to act on",
+      "plain_alternative": "specific, usable",
+      "example": "Make the feedback actionable.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "30,000-foot view",
+      "category": "idiom",
+      "meaning": "the high-level summary without detail",
+      "plain_alternative": "the big picture",
+      "example": "Give me the 30,000-foot view.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "peel the onion",
+      "category": "idiom",
+      "meaning": "examine successive layers of a problem",
+      "plain_alternative": "dig deeper",
+      "example": "We need to peel the onion here.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "circle the wagons",
+      "category": "military_metaphor",
+      "meaning": "close ranks defensively",
+      "plain_alternative": "close ranks",
+      "example": "They circled the wagons after the audit.",
+      "risk": "American frontier reference",
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "BAU",
+      "category": "acronym",
+      "meaning": "business as usual, the normal ongoing operation",
+      "plain_alternative": "normal operations",
+      "example": "Once live it moves to BAU.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "SME",
+      "category": "acronym",
+      "meaning": "subject matter expert",
+      "plain_alternative": "expert",
+      "example": "Get the SME on the call.",
+      "risk": "also means small and medium enterprise in UK and EU contexts",
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "RAG status",
+      "category": "acronym",
+      "meaning": "red, amber, green health rating for a project",
+      "plain_alternative": "project status",
+      "example": "The RAG went amber.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "COB",
+      "category": "acronym",
+      "meaning": "close of business, end of the working day",
+      "plain_alternative": "end of day",
+      "example": "Send it by COB.",
+      "risk": "COB and EOD are used interchangeably but COB can imply the recipient's timezone",
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "SOW",
+      "category": "acronym",
+      "meaning": "statement of work",
+      "plain_alternative": "scope document",
+      "example": "The SOW covers phase one only.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "LOB",
+      "category": "acronym",
+      "meaning": "line of business",
+      "plain_alternative": "business unit",
+      "example": "Which LOB owns this?",
+      "risk": "common in banking",
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "WIP",
+      "category": "acronym",
+      "meaning": "work in progress",
+      "plain_alternative": "in progress",
+      "example": "That deck is WIP.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "FTE",
+      "category": "acronym",
+      "meaning": "full-time equivalent, a unit of staffing",
+      "plain_alternative": "headcount unit",
+      "example": "This saves 2.5 FTE.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "POC",
+      "category": "acronym",
+      "meaning": "proof of concept",
+      "plain_alternative": "pilot",
+      "example": "Build a POC first.",
+      "risk": "also means point of contact; ambiguous",
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "table it",
+      "category": "ambiguous",
+      "meaning": "US: postpone or remove from the agenda. UK: put ON the agenda for discussion. Opposite meanings.",
+      "plain_alternative": "say postpone or say add to the agenda",
+      "example": "Let's table it until next week.",
+      "risk": "HIGH RISK on transatlantic calls. Never use it. Say what you mean.",
+      "subtext": "in US usage, tabling a motion often kills it",
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "that's interesting",
+      "category": "ambiguous",
+      "meaning": "literal interest, or polite disagreement",
+      "plain_alternative": "say plainly what you think",
+      "example": "That's interesting.",
+      "risk": null,
+      "subtext": "frequently means I disagree but will not say so here",
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "I have a few thoughts",
+      "category": "ambiguous",
+      "meaning": "a small comment, or significant objections",
+      "plain_alternative": "say the size of the concern",
+      "example": "I have a few thoughts on the approach.",
+      "risk": null,
+      "subtext": "often means I have serious objections",
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "aggressive",
+      "category": "ambiguous",
+      "meaning": "for a timeline it means very tight and probably unrealistic",
+      "plain_alternative": "tight, unrealistic",
+      "example": "That is an aggressive timeline.",
+      "risk": null,
+      "subtext": "usually a polite way of saying this will not work",
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "with all due respect",
+      "category": "ambiguous",
+      "meaning": "precedes disagreement, and is heard as hostile",
+      "plain_alternative": "just state the disagreement",
+      "example": "With all due respect, the data says otherwise.",
+      "risk": null,
+      "subtext": "everyone hears the opposite of respect",
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "per my last email",
+      "category": "ambiguous",
+      "meaning": "refers back to something already said",
+      "plain_alternative": "point to the earlier message plainly",
+      "example": "Per my last email, the deadline is Friday.",
+      "risk": null,
+      "subtext": "widely read as annoyed",
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "let's not reinvent the wheel",
+      "category": "idiom",
+      "meaning": "reuse what already exists",
+      "plain_alternative": "reuse what we have",
+      "example": "Let's not reinvent the wheel.",
+      "risk": null,
+      "subtext": null,
+      "use_yourself": true,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    },
+    {
+      "term": "quite",
+      "category": "ambiguous",
+      "meaning": "US: very. UK: somewhat, or a mild downgrade.",
+      "plain_alternative": "use very or somewhat explicitly",
+      "example": "That is quite good.",
+      "risk": "quite good means very good in US usage and only fairly good in UK usage",
+      "subtext": null,
+      "use_yourself": false,
+      "srs": {
+        "ef": 2.5,
+        "interval": 0,
+        "reps": 0,
+        "due": null
+      }
+    }
+  ]
+}

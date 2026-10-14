@@ -1,0 +1,98 @@
+{
+  "size": [
+    384,
+    512
+  ],
+  "actors": {
+    "man": {
+      "label": "Tom",
+      "states": {
+        "idle": [
+          "idle-1.jpg",
+          "idle-2.jpg"
+        ],
+        "talk": [
+          "talk-1.jpg",
+          "talk-2.jpg",
+          "talk-3.jpg",
+          "talk-4.jpg",
+          "talk-5.jpg",
+          "talk-6.jpg",
+          "talk-7.jpg",
+          "talk-8.jpg"
+        ],
+        "blink": [
+          "blink-1.jpg",
+          "blink-2.jpg",
+          "blink-3.jpg",
+          "blink-4.jpg"
+        ],
+        "smile": [
+          "smile-1.jpg",
+          "smile-2.jpg"
+        ],
+        "skeptical": [
+          "skeptical-1.jpg"
+        ],
+        "glance": [
+          "glance-1.jpg"
+        ],
+        "surprised": [
+          "surprised-1.jpg"
+        ]
+      }
+    },
+    "woman": {
+      "label": "Dana",
+      "states": {
+        "idle": [
+          "idle-1.jpg",
+          "idle-2.jpg"
+        ],
+        "talk": [
+          "talk-1.jpg",
+          "talk-2.jpg",
+          "talk-3.jpg",
+          "talk-4.jpg",
+          "talk-5.jpg",
+          "talk-6.jpg",
+          "talk-7.jpg",
+          "talk-8.jpg"
+        ],
+        "blink": [
+          "blink-1.jpg",
+          "blink-2.jpg",
+          "blink-3.jpg",
+          "blink-4.jpg"
+        ],
+        "smile": [
+          "smile-1.jpg",
+          "smile-2.jpg",
+          "smile-3.jpg"
+        ],
+        "skeptical": [
+          "skeptical-1.jpg"
+        ],
+        "glance": [
+          "glance-1.jpg"
+        ],
+        "surprised": [
+          "surprised-1.jpg"
+        ]
+      }
+    }
+  },
+  "personas": {
+    "friendly": "man",
+    "specifics": "woman",
+    "two-part": "man",
+    "premise": "woman",
+    "loader": "man",
+    "bundler": "woman",
+    "status": "man",
+    "speechmaker": "man",
+    "auditor": "woman",
+    "returner": "woman",
+    "vp": "man"
+  }
+}

@@ -1,0 +1,32 @@
+# Stage Time v4
+# CPU only. Nothing here calls a paid API.
+#
+# Python 3.12 is the safe choice. 3.10 to 3.13 work for everything in this
+# file. Anything older than 3.10 fails outright.
+
+# --- required: the app runs and scores with only these ---
+fastapi>=0.110
+uvicorn[standard]>=0.27
+python-multipart>=0.0.9
+httpx>=0.27
+
+# --- voice analysis: volume, pitch, steadiness, tremor ---
+# Without these the app still scores pace, fillers, hedges, jargon and every
+# question drill.
+praat-parselmouth>=0.4.7
+scipy>=1.11
+numpy>=1.24
+soundfile>=0.12
+
+# --- transcription: local, verbatim, no audio leaves the machine ---
+# Standard Whisper tidies away "um" and "uh". Stage Time keeps them by
+# turning the voice filter off and priming the model with disfluencies.
+faster-whisper>=1.0
+
+# Spoken voices for the roleplay characters (Kokoro) are optional and live in
+# requirements-voices.txt. Without them the app uses the voices built into
+# your browser, which need no install at all.
+
+# Not installed by pip:
+#   ffmpeg   converts browser webm to wav. winget install ffmpeg / brew install ffmpeg
+#   ollama   the coaching model. ollama pull qwen2.5:3b
